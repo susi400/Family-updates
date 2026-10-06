@@ -86,6 +86,8 @@
       border-radius: 12px;
       margin-bottom: 14px;
       display: block;
+      max-height: 600px;
+      object-fit: cover;
     }
 
     .message {
@@ -143,6 +145,11 @@
       text-align: center;
       padding: 14px;
     }
+
+    .post-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 
@@ -157,11 +164,19 @@
 
   <div class="top-bar">
     <h2>Latest Updates</h2>
-    <button id="loginButton" class="login-button">Log in</button>
-    <button id="logoutButton" class="logout-button hidden">Log out</button>
+
+    <button id="loginButton" class="login-button">
+      Log in
+    </button>
+
+    <button id="logoutButton" class="logout-button hidden">
+      Log out
+    </button>
   </div>
 
+
   <div id="loginBox" class="login-box hidden">
+
     <h3>Family Login</h3>
 
     <input
@@ -181,9 +196,12 @@
     </button>
 
     <p id="loginMessage"></p>
+
   </div>
 
+
   <div id="newPostBox" class="new-post-box hidden">
+
     <h3>＋ New Update</h3>
 
     <input
@@ -208,69 +226,136 @@
     </button>
 
     <p id="postMessage"></p>
+
   </div>
 
+
   <div id="posts">
-    <div class="empty">Loading family updates...</div>
+    <div class="empty">
+      Loading family updates...
+    </div>
   </div>
 
 </div>
+
 
 <div class="bottom-nav">
   ❤️ Our Family
 </div>
 
+
 <script>
+
+  /* =========================================
+     SUPABASE CONNECTION
+     ========================================= */
+
   const SUPABASE_URL =
     "https://efwhuwmnsikapsotlauy.supabase.co";
 
   const SUPABASE_KEY =
-    "sb_publishable_71zpw_6tibul5KHmbaBE6A_BYGVb5FG";
+    "PASTE_YOUR_CURRENT_ROTATED_PUBLISHABLE_KEY_HERE";
 
   const supabaseClient =
-    supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
 
-  const loginButton = document.getElementById("loginButton");
-  const logoutButton = document.getElementById("logoutButton");
-  const loginBox = document.getElementById("loginBox");
-  const newPostBox = document.getElementById("newPostBox");
-  const submitLogin = document.getElementById("submitLogin");
-  const postButton = document.getElementById("postButton");
+  /* =========================================
+     ELEMENTS
+     ========================================= */
 
+  const loginButton =
+    document.getElementById("loginButton");
+
+  const logoutButton =
+    document.getElementById("logoutButton");
+
+  const loginBox =
+    document.getElementById("loginBox");
+
+  const newPostBox =
+    document.getElementById("newPostBox");
+
+  const submitLogin =
+    document.getElementById("submitLogin");
+
+  const postButton =
+    document.getElementById("postButton");
+
+
+  /* =========================================
+     LOGIN BUTTON
+     ========================================= */
 
   loginButton.addEventListener("click", () => {
+
     loginBox.classList.toggle("hidden");
+
   });
 
+
+  /* =========================================
+     LOGIN
+     ========================================= */
 
   submitLogin.addEventListener("click", async () => {
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const loginMessage = document.getElementById("loginMessage");
+    const email =
+      document.getElementById("email").value.trim();
 
-    loginMessage.textContent = "Logging in...";
+    const password =
+      document.getElementById("password").value;
+
+    const loginMessage =
+      document.getElementById("loginMessage");
+
+    loginMessage.textContent =
+      "Logging in...";
+
 
     const { error } =
       await supabaseClient.auth.signInWithPassword({
-        email,
-        password
+
+        email: email,
+
+        password: password
+
       });
 
+
     if (error) {
-      loginMessage.textContent = error.message;
+
+      loginMessage.textContent =
+        error.message;
+
       return;
+
     }
 
-    loginMessage.textContent = "Logged in!";
+
+    loginMessage.textContent =
+      "Logged in! ❤️";
+
   });
 
+
+  /* =========================================
+     LOGOUT
+     ========================================= */
 
   logoutButton.addEventListener("click", async () => {
+
     await supabaseClient.auth.signOut();
+
   });
 
+
+  /* =========================================
+     AUTH STATE
+     ========================================= */
 
   supabaseClient.auth.onAuthStateChange(
     async (event, session) => {
@@ -278,9 +363,11 @@
       if (session) {
 
         loginButton.classList.add("hidden");
+
         logoutButton.classList.remove("hidden");
 
         loginBox.classList.add("hidden");
+
         newPostBox.classList.remove("hidden");
 
         loadPosts();
@@ -288,6 +375,7 @@
       } else {
 
         loginButton.classList.remove("hidden");
+
         logoutButton.classList.add("hidden");
 
         newPostBox.classList.add("hidden");
@@ -300,27 +388,43 @@
   );
 
 
+  /* =========================================
+     LOAD POSTS
+     ========================================= */
+
   async function loadPosts() {
 
     const postsContainer =
       document.getElementById("posts");
 
+
     postsContainer.innerHTML =
       '<div class="empty">Loading family updates...</div>';
+
 
     const { data, error } =
       await supabaseClient
         .from("posts")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
 
     if (error) {
+
+      console.error(error);
 
       postsContainer.innerHTML =
         '<div class="empty">Please log in to view family updates. ❤️</div>';
 
       return;
+
     }
+
 
     if (!data || data.length === 0) {
 
@@ -328,38 +432,97 @@
         '<div class="empty">No family updates yet. ❤️</div>';
 
       return;
+
     }
+
 
     postsContainer.innerHTML = "";
 
-    data.forEach(post => {
+
+    /* =========================================
+       CREATE EACH POST
+       ========================================= */
+
+    for (const post of data) {
 
       const card =
         document.createElement("div");
 
-      card.className = "post-card";
+      card.className =
+        "post-card";
+
 
       let html = "";
 
+
+      /* -----------------------------------------
+         PHOTO
+         ----------------------------------------- */
+
       if (post.photo_url) {
-        html += `
-          <img
-            src="${post.photo_url}"
-            alt="Family photo"
-          >
-        `;
+
+        let photoUrl = null;
+
+
+        /*
+          photo_url currently contains the
+          filename of the photo.
+        */
+
+        const { data: signedData, error: signedError } =
+          await supabaseClient.storage
+            .from("family-photos")
+            .createSignedUrl(
+              post.photo_url,
+              60 * 60
+            );
+
+
+        if (!signedError && signedData) {
+
+          photoUrl =
+            signedData.signedUrl;
+
+        }
+
+
+        if (photoUrl) {
+
+          html += `
+            <img
+              src="${photoUrl}"
+              alt="Family photo"
+            >
+          `;
+
+        }
+
       }
 
+
+      /* -----------------------------------------
+         MESSAGE
+         ----------------------------------------- */
+
       if (post.message) {
+
         html += `
           <div class="message">
             ${escapeHtml(post.message)}
           </div>
         `;
+
       }
 
+
+      /* -----------------------------------------
+         DATE
+         ----------------------------------------- */
+
       const date =
-        new Date(post.created_at).toLocaleDateString(
+        new Date(
+          post.created_at
+        ).toLocaleDateString(
           undefined,
           {
             year: "numeric",
@@ -368,117 +531,222 @@
           }
         );
 
+
+      /* -----------------------------------------
+         LOCATION
+         ----------------------------------------- */
+
       html += `
         <div class="meta">
           ${date}
-          ${post.location ? " · " + escapeHtml(post.location) : ""}
+          ${
+            post.location
+              ? " · " + escapeHtml(post.location)
+              : ""
+          }
         </div>
       `;
 
-      card.innerHTML = html;
 
-      postsContainer.appendChild(card);
+      card.innerHTML =
+        html;
 
-    });
+
+      postsContainer.appendChild(
+        card
+      );
+
+    }
 
   }
 
 
-  postButton.addEventListener("click", async () => {
+  /* =========================================
+     CREATE NEW POST
+     ========================================= */
 
-    const file =
-      document.getElementById("photo").files[0];
+  postButton.addEventListener(
+    "click",
+    async () => {
 
-    const message =
-      document.getElementById("message").value;
-
-    const location =
-      document.getElementById("location").value;
-
-    const postMessage =
-      document.getElementById("postMessage");
-
-    postMessage.textContent = "Posting...";
-
-    let photoUrl = null;
+      const file =
+        document.getElementById("photo")
+          .files[0];
 
 
-    if (file) {
-
-      const fileName =
-        Date.now() + "-" +
-        file.name.replace(/\s+/g, "-");
-
-      const { error: uploadError } =
-        await supabaseClient.storage
-          .from("family-photos")
-          .upload(fileName, file);
-
-      if (uploadError) {
-
-        postMessage.textContent =
-          "Photo upload failed: " +
-          uploadError.message;
-
-        return;
-      }
+      const message =
+        document.getElementById("message")
+          .value
+          .trim();
 
 
-      const { data: signedData, error: signedError } =
-        await supabaseClient.storage
-          .from("family-photos")
-          .createSignedUrl(fileName, 60 * 60 * 24 * 365);
-
-      if (signedError) {
-
-        postMessage.textContent =
-          "Could not create photo link.";
-
-        return;
-      }
-
-      photoUrl = signedData.signedUrl;
-
-    }
+      const location =
+        document.getElementById("location")
+          .value
+          .trim();
 
 
-    const { error } =
-      await supabaseClient
-        .from("posts")
-        .insert({
-          message: message || null,
-          photo_url: photoUrl,
-          location: location || null
-        });
+      const postMessage =
+        document.getElementById("postMessage");
 
 
-    if (error) {
+      postButton.disabled =
+        true;
+
 
       postMessage.textContent =
-        "Post failed: " + error.message;
+        "Posting...";
 
-      return;
+
+      let photoPath =
+        null;
+
+
+      /* -----------------------------------------
+         UPLOAD PHOTO
+         ----------------------------------------- */
+
+      if (file) {
+
+        const fileExtension =
+          file.name.includes(".")
+            ? file.name.split(".").pop()
+            : "jpg";
+
+
+        const fileName =
+          Date.now() +
+          "-" +
+          crypto.randomUUID() +
+          "." +
+          fileExtension;
+
+
+        const { error: uploadError } =
+          await supabaseClient.storage
+            .from("family-photos")
+            .upload(
+              fileName,
+              file,
+              {
+                contentType: file.type,
+                upsert: false
+              }
+            );
+
+
+        if (uploadError) {
+
+          console.error(uploadError);
+
+          postMessage.textContent =
+            "Photo upload failed: " +
+            uploadError.message;
+
+          postButton.disabled =
+            false;
+
+          return;
+
+        }
+
+
+        /*
+          IMPORTANT:
+
+          We save the FILE PATH,
+          not a temporary signed URL.
+
+          This allows us to create a fresh
+          secure URL whenever the feed loads.
+        */
+
+        photoPath =
+          fileName;
+
+      }
+
+
+      /* -----------------------------------------
+         INSERT POST INTO DATABASE
+         ----------------------------------------- */
+
+      const { error } =
+        await supabaseClient
+          .from("posts")
+          .insert({
+
+            message:
+              message || null,
+
+            photo_url:
+              photoPath,
+
+            location:
+              location || null
+
+          });
+
+
+      if (error) {
+
+        console.error(error);
+
+        postMessage.textContent =
+          "Post failed: " +
+          error.message;
+
+        postButton.disabled =
+          false;
+
+        return;
+
+      }
+
+
+      /* -----------------------------------------
+         RESET FORM
+         ----------------------------------------- */
+
+      document.getElementById("photo")
+        .value = "";
+
+      document.getElementById("message")
+        .value = "";
+
+      document.getElementById("location")
+        .value = "";
+
+
+      postMessage.textContent =
+        "Posted! ❤️";
+
+
+      postButton.disabled =
+        false;
+
+
+      /* -----------------------------------------
+         REFRESH FEED
+         ----------------------------------------- */
+
+      loadPosts();
+
     }
+  );
 
 
-    document.getElementById("photo").value = "";
-    document.getElementById("message").value = "";
-    document.getElementById("location").value = "";
-
-    postMessage.textContent =
-      "Posted! ❤️";
-
-    loadPosts();
-
-  });
-
+  /* =========================================
+     ESCAPE TEXT
+     ========================================= */
 
   function escapeHtml(text) {
 
     const div =
       document.createElement("div");
 
-    div.textContent = text;
+    div.textContent =
+      text;
 
     return div.innerHTML;
 
@@ -487,4 +755,4 @@
 </script>
 
 </body>
-</html>
+</html> 
