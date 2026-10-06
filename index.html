@@ -548,7 +548,7 @@
       );
 
     postsContainer.innerHTML =
-      '<div class="empty">Loading happy moments... 🩷</div>';
+      <div class="empty">Loading happy moments... 🩷</div>;
 
     const { data, error } =
       await supabaseClient
@@ -566,7 +566,7 @@
       console.error(error);
 
       postsContainer.innerHTML =
-        '<div class="empty">Please log in to view our happy moments. 🩷</div>';
+        <div class="empty">Please log in to view our happy moments. 🩷</div>;
 
       return;
 
@@ -575,7 +575,7 @@
     if (!data || data.length === 0) {
 
       postsContainer.innerHTML =
-        '<div class="empty">No happy moments yet. 🫶</div>';
+        <div class="empty">No happy moments yet. 🫶</div>;
 
       return;
 
@@ -625,7 +625,7 @@
 
         if (photoUrl) {
 
-          html += `
+          html += 
             <img
               src="${photoUrl}"
               alt="Family photo"
@@ -638,7 +638,7 @@
 
       if (post.message) {
 
-        html += `
+        html += 
           <div class="message">
             ${escapeHtml(post.message)}
           </div>
