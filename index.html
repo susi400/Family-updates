@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Family Updates</title>
+    <title>Our Family</title>
 
     <style>
         * {
@@ -13,66 +13,115 @@
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f7f4ef;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f7f5f2;
+            color: #292725;
         }
 
         header {
-            background: white;
-            padding: 25px 20px;
+            background: #ffffff;
+            padding: 28px 20px 22px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-bottom: 1px solid #ebe7e2;
+        }
+
+        .heart {
+            font-size: 30px;
+            margin-bottom: 5px;
         }
 
         header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 27px;
+            font-weight: 600;
         }
 
         header p {
-            margin: 8px 0 0;
-            color: #777;
+            margin: 7px 0 0;
+            color: #88827b;
+            font-size: 15px;
         }
 
         main {
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 0 15px;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 25px 16px 100px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h2 {
+            margin: 0 0 6px;
+            font-size: 21px;
+            font-weight: 600;
+        }
+
+        .welcome p {
+            margin: 0;
+            color: #77716b;
+            font-size: 15px;
         }
 
         .post {
             background: white;
-            border-radius: 16px;
+            border-radius: 18px;
             margin-bottom: 25px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
         }
 
         .post img {
             width: 100%;
+            height: auto;
             display: block;
         }
 
         .post-content {
-            padding: 18px;
+            padding: 18px 19px 20px;
         }
 
         .post-date {
-            font-size: 13px;
-            color: #999;
+            font-size: 12px;
+            color: #a09a94;
             margin-bottom: 8px;
         }
 
         .post-text {
-            font-size: 17px;
-            line-height: 1.5;
+            font-size: 16px;
+            line-height: 1.55;
+        }
+
+        .location {
+            font-size: 13px;
+            color: #77716b;
+            margin-top: 12px;
         }
 
         .empty {
             text-align: center;
-            padding: 50px 20px;
-            color: #888;
+            padding: 35px 20px;
+            color: #99938d;
+            font-size: 14px;
+        }
+
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: rgba(255,255,255,0.96);
+            border-top: 1px solid #e8e4df;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav span {
+            font-size: 14px;
+            color: #55504b;
         }
     </style>
 </head>
@@ -80,23 +129,38 @@
 <body>
 
     <header>
-        <h1>❤️ Family Updates</h1>
+        <div class="heart">❤️</div>
+        <h1>Our Family</h1>
         <p>Little moments from Austria</p>
     </header>
 
     <main>
 
+        <div class="welcome">
+            <h2>Latest updates</h2>
+            <p>Sharing a little piece of our everyday life with you.</p>
+        </div>
+
         <div class="post">
+
             <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1000&q=80">
 
             <div class="post-content">
-                <div class="post-date">October 6, 2026</div>
+
+                <div class="post-date">
+                    October 6, 2026
+                </div>
 
                 <div class="post-text">
                     Hello from Austria! 🇦🇹
                     <br><br>
-                    This is our new little family update page. ❤️
+                    This is our new little family update page. We're excited to share photos and little updates with you here. ❤️
                 </div>
+
+                <div class="location">
+                    📍 Austria
+                </div>
+
             </div>
         </div>
 
@@ -105,6 +169,10 @@
         </div>
 
     </main>
+
+    <nav>
+        <span>❤️ Our Family</span>
+    </nav>
 
 </body>
 </html>
