@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,14 +7,12 @@
   <title>Our Family</title>
 
   <!-- PWA -->
-
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#930527">
   <link rel="icon" type="image/png" sizes="192x192" href="./Design%20ohne%20Titel%20%281%29.png">
   <link rel="apple-touch-icon" href="./Design%20ohne%20Titel%20%281%29.png">
 
   <!-- Google Fonts -->
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -25,11 +22,9 @@
   >
 
   <!-- Supabase -->
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-
     :root {
       --background: #F1E5D7;
       --header-color: #930527;
@@ -38,10 +33,7 @@
       --text-color: #333333;
       --secondary-text: #777777;
       --border-color: #E8D8CC;
-
-      --soft-shadow:
-        0 5px 20px rgba(84, 3, 23, 0.10);
-
+      --soft-shadow: 0 5px 20px rgba(84, 3, 23, 0.10);
       --very-rounded: 24px;
       --button-rounded: 30px;
     }
@@ -246,7 +238,6 @@
     }
 
     @media (max-width: 600px) {
-
       body {
         font-size: 24px;
       }
@@ -266,597 +257,585 @@
       .container {
         padding: 25px 14px 50px;
       }
-
     }
-
   </style>
-
 </head>
 
 <body>
 
   <header>
+    <h1>Sharing our happy moments 🩷</h1>
 
-<h1>
-  Sharing our happy moments 🩷
-</h1>
-
-<p>
-  Use this to share updated pictures and your favourite stories
-</p>
-
+    <p>
+      Use this to share updated pictures and your favourite stories
+    </p>
   </header>
 
   <div class="container">
 
-<div class="top-bar">
+    <div class="top-bar">
 
-  <h2>
-    Latest Updates
-  </h2>
+      <h2>Latest Updates</h2>
 
-  <button
-    id="loginButton"
-    class="login-button"
-  >
-    Log in
-  </button>
+      <button
+        id="loginButton"
+        class="login-button"
+      >
+        Log in
+      </button>
 
-  <button
-    id="logoutButton"
-    class="logout-button hidden"
-  >
-    Log out
-  </button>
+      <button
+        id="logoutButton"
+        class="logout-button hidden"
+      >
+        Log out
+      </button>
 
-</div>
+    </div>
 
-<div
-  id="loginBox"
-  class="login-box hidden"
->
+    <div
+      id="loginBox"
+      class="login-box hidden"
+    >
 
-  <h3>
-    Welcome back 😊
-  </h3>
+      <h3>Welcome back 😊</h3>
 
-  <input
-    type="email"
-    id="email"
-    placeholder="Email"
-  >
+      <input
+        type="email"
+        id="email"
+        placeholder="Email"
+      >
 
-  <input
-    type="password"
-    id="password"
-    placeholder="Password"
-  >
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+      >
 
-  <button
-    id="submitLogin"
-    class="login-button"
-  >
-    Log in 🫶
-  </button>
+      <button
+        id="submitLogin"
+        class="login-button"
+      >
+        Log in 🫶
+      </button>
 
-  <p id="loginMessage"></p>
+      <p id="loginMessage"></p>
 
-</div>
+    </div>
 
-<div
-  id="newPostBox"
-  class="new-post-box hidden"
->
+    <div
+      id="newPostBox"
+      class="new-post-box hidden"
+    >
 
-  <h3>
-    Share a moment 🩵
-  </h3>
+      <h3>Share a moment 🩵</h3>
 
-  <input
-    type="file"
-    id="photo"
-    accept="image/*"
-  >
+      <input
+        type="file"
+        id="photo"
+        accept="image/*"
+      >
 
-  <textarea
-    id="message"
-    placeholder="Share an update... 😊"
-  ></textarea>
+      <textarea
+        id="message"
+        placeholder="Share an update... 😊"
+      ></textarea>
 
-  <input
-    type="text"
-    id="location"
-    placeholder="Location (optional)"
-  >
+      <input
+        type="text"
+        id="location"
+        placeholder="Location (optional)"
+      >
 
-  <button
-    id="postButton"
-    class="post-button"
-  >
-    Share with the family 🫶
-  </button>
+      <button
+        id="postButton"
+        class="post-button"
+      >
+        Share with the family 🫶
+      </button>
 
-  <p id="postMessage"></p>
+      <p id="postMessage"></p>
 
-</div>
+    </div>
 
-<div id="posts">
+    <div id="posts">
 
-  <div class="empty">
-    Loading happy moments... 🩷
-  </div>
+      <div class="empty">
+        Loading happy moments... 🩷
+      </div>
 
-</div>
+    </div>
 
   </div>
 
-<script>
+  <script>
+    /* =========================================
+       SUPABASE CONNECTION
+       ========================================= */
 
-  const SUPABASE_URL =
-    "https://efwhuwmnsikapsotlauy.supabase.co";
+    const SUPABASE_URL =
+      "https://efwhuwmnsikapsotlauy.supabase.co";
 
-  const SUPABASE_KEY =
-    "sb_publishable_71zpw_6tibul5KHmbaBE6A_BYGVb5FG";
+    const SUPABASE_KEY =
+      "sb_publishable_71zpw_6tibul5KHmbaBE6A_BYGVb5FG";
 
-  const supabaseClient =
-    supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* =========================================
+       ELEMENTS
+       ========================================= */
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const loginBox =
+      document.getElementById("loginBox");
+
+    const newPostBox =
+      document.getElementById("newPostBox");
+
+    const submitLogin =
+      document.getElementById("submitLogin");
+
+    const postButton =
+      document.getElementById("postButton");
+
+
+    /* =========================================
+       LOGIN BUTTON
+       ========================================= */
+
+    loginButton.addEventListener(
+      "click",
+      () => {
+        loginBox.classList.toggle("hidden");
+      }
     );
 
-  const loginButton =
-    document.getElementById("loginButton");
 
-  const logoutButton =
-    document.getElementById("logoutButton");
+    /* =========================================
+       LOGIN
+       ========================================= */
 
-  const loginBox =
-    document.getElementById("loginBox");
+    submitLogin.addEventListener(
+      "click",
+      async () => {
 
-  const newPostBox =
-    document.getElementById("newPostBox");
+        const email =
+          document
+            .getElementById("email")
+            .value
+            .trim();
 
-  const submitLogin =
-    document.getElementById("submitLogin");
+        const password =
+          document
+            .getElementById("password")
+            .value;
 
-  const postButton =
-    document.getElementById("postButton");
-
-  loginButton.addEventListener(
-    "click",
-    () => {
-
-      loginBox.classList.toggle(
-        "hidden"
-      );
-
-    }
-  );
-
-  submitLogin.addEventListener(
-    "click",
-    async () => {
-
-      const email =
-        document
-          .getElementById("email")
-          .value
-          .trim();
-
-      const password =
-        document
-          .getElementById("password")
-          .value;
-
-      const loginMessage =
-        document.getElementById(
-          "loginMessage"
-        );
-
-      loginMessage.textContent =
-        "Logging in...";
-
-      const { error } =
-        await supabaseClient.auth
-          .signInWithPassword({
-
-            email:
-              email,
-
-            password:
-              password
-
-          });
-
-      if (error) {
+        const loginMessage =
+          document.getElementById("loginMessage");
 
         loginMessage.textContent =
-          error.message;
-
-        return;
-
-      }
-
-      loginMessage.textContent =
-        "Welcome, you're logged in! 🫶";
-
-    }
-  );
-
-  logoutButton.addEventListener(
-    "click",
-    async () => {
-
-      await supabaseClient.auth.signOut();
-
-    }
-  );
-
-  supabaseClient.auth.onAuthStateChange(
-    async (event, session) => {
-
-      if (session) {
-
-        loginButton.classList.add(
-          "hidden"
-        );
-
-        logoutButton.classList.remove(
-          "hidden"
-        );
-
-        loginBox.classList.add(
-          "hidden"
-        );
-
-        newPostBox.classList.remove(
-          "hidden"
-        );
-
-        loadPosts();
-
-      } else {
-
-        loginButton.classList.remove(
-          "hidden"
-        );
-
-        logoutButton.classList.add(
-          "hidden"
-        );
-
-        newPostBox.classList.add(
-          "hidden"
-        );
-
-        loadPosts();
-
-      }
-
-    }
-  );
-
-  async function loadPosts() {
-
-    const postsContainer =
-      document.getElementById(
-        "posts"
-      );
-
-    postsContainer.innerHTML =
-      <div class="empty">Loading happy moments... 🩷</div>;
-
-    const { data, error } =
-      await supabaseClient
-        .from("posts")
-        .select("*")
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
-
-    if (error) {
-
-      console.error(error);
-
-      postsContainer.innerHTML =
-        <div class="empty">Please log in to view our happy moments. 🩷</div>;
-
-      return;
-
-    }
-
-    if (!data || data.length === 0) {
-
-      postsContainer.innerHTML =
-        <div class="empty">No happy moments yet. 🫶</div>;
-
-      return;
-
-    }
-
-    postsContainer.innerHTML =
-      "";
-
-    for (const post of data) {
-
-      const card =
-        document.createElement(
-          "div"
-        );
-
-      card.className =
-        "post-card";
-
-      let html =
-        "";
-
-      if (post.photo_url) {
-
-        let photoUrl =
-          null;
-
-        const {
-          data: signedData,
-          error: signedError
-        } =
-          await supabaseClient.storage
-            .from("family-photos")
-            .createSignedUrl(
-              post.photo_url,
-              60 * 60
-            );
-
-        if (
-          !signedError &&
-          signedData
-        ) {
-
-          photoUrl =
-            signedData.signedUrl;
-
-        }
-
-        if (photoUrl) {
-
-          html += 
-            <img
-              src="${photoUrl}"
-              alt="Family photo"
-            >
-          `;
-
-        }
-
-      }
-
-      if (post.message) {
-
-        html += 
-          <div class="message">
-            ${escapeHtml(post.message)}
-          </div>
-        `;
-
-      }
-
-      const date =
-        new Date(
-          post.created_at
-        ).toLocaleDateString(
-          undefined,
-          {
-            year:
-              "numeric",
-
-            month:
-              "long",
-
-            day:
-              "numeric"
-          }
-        );
-
-      html += `
-        <div class="meta">
-          ${date}
-
-          ${
-            post.location
-              ? " · " +
-                escapeHtml(
-                  post.location
-                )
-              : ""
-          }
-        </div>
-      `;
-
-      card.innerHTML =
-        html;
-
-      postsContainer.appendChild(
-        card
-      );
-
-    }
-
-  }
-
-  postButton.addEventListener(
-    "click",
-    async () => {
-
-      const file =
-        document
-          .getElementById("photo")
-          .files[0];
-
-      const message =
-        document
-          .getElementById("message")
-          .value
-          .trim();
-
-      const location =
-        document
-          .getElementById("location")
-          .value
-          .trim();
-
-      const postMessage =
-        document.getElementById(
-          "postMessage"
-        );
-
-      postButton.disabled =
-        true;
-
-      postMessage.textContent =
-        "Sharing your moment... 🫶";
-
-      let photoPath =
-        null;
-
-      if (file) {
-
-        const fileExtension =
-          file.name.includes(".")
-            ? file.name
-                .split(".")
-                .pop()
-            : "jpg";
-
-        const fileName =
-          Date.now() +
-          "-" +
-          crypto.randomUUID() +
-          "." +
-          fileExtension;
-
-        const {
-          error: uploadError
-        } =
-          await supabaseClient.storage
-            .from("family-photos")
-            .upload(
-              fileName,
-              file,
-              {
-                contentType:
-                  file.type,
-
-                upsert:
-                  false
-              }
-            );
-
-        if (uploadError) {
-
-          console.error(
-            uploadError
-          );
-
-          postMessage.textContent =
-            "Photo upload failed: " +
-            uploadError.message;
-
-          postButton.disabled =
-            false;
-
+          "Logging in...";
+
+        const { error } =
+          await supabaseClient.auth
+            .signInWithPassword({
+              email: email,
+              password: password
+            });
+
+        if (error) {
+          loginMessage.textContent =
+            error.message;
           return;
-
         }
 
-        photoPath =
-          fileName;
-
+        loginMessage.textContent =
+          "Welcome, you're logged in! 🫶";
       }
+    );
 
-      const { error } =
+
+    /* =========================================
+       LOGOUT
+       ========================================= */
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+        await supabaseClient.auth.signOut();
+      }
+    );
+
+
+    /* =========================================
+       AUTH STATE
+       ========================================= */
+
+    supabaseClient.auth.onAuthStateChange(
+      async (event, session) => {
+
+        if (session) {
+
+          loginButton.classList.add("hidden");
+
+          logoutButton.classList.remove("hidden");
+
+          loginBox.classList.add("hidden");
+
+          newPostBox.classList.remove("hidden");
+
+          loadPosts();
+
+        } else {
+
+          loginButton.classList.remove("hidden");
+
+          logoutButton.classList.add("hidden");
+
+          newPostBox.classList.add("hidden");
+
+          loadPosts();
+
+        }
+      }
+    );
+
+
+    /* =========================================
+       LOAD POSTS
+       ========================================= */
+
+    async function loadPosts() {
+
+      const postsContainer =
+        document.getElementById("posts");
+
+      postsContainer.innerHTML =
+        '<div class="empty">Loading happy moments... 🩷</div>';
+
+      const { data, error } =
         await supabaseClient
           .from("posts")
-          .insert({
-
-            message:
-              message || null,
-
-            photo_url:
-              photoPath,
-
-            location:
-              location || null
-
-          });
+          .select("*")
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
 
       if (error) {
 
         console.error(error);
 
-        postMessage.textContent =
-          "Post failed: " +
-          error.message;
-
-        postButton.disabled =
-          false;
+        postsContainer.innerHTML =
+          '<div class="empty">Please log in to view our happy moments. 🩷</div>';
 
         return;
-
       }
 
-      document.getElementById(
-        "photo"
-      ).value =
-        "";
+      if (!data || data.length === 0) {
 
-      document.getElementById(
-        "message"
-      ).value =
-        "";
+        postsContainer.innerHTML =
+          '<div class="empty">No happy moments yet. 🫶</div>';
 
-      document.getElementById(
-        "location"
-      ).value =
-        "";
+        return;
+      }
 
-      postMessage.textContent =
-        "Shared with the family! 🩷";
+      postsContainer.innerHTML = "";
 
-      postButton.disabled =
-        false;
+      for (const post of data) {
 
-      loadPosts();
+        const card =
+          document.createElement("div");
 
+        card.className =
+          "post-card";
+
+        let html = "";
+
+
+        /* =======================================
+           PHOTO
+           ======================================= */
+
+        if (post.photo_url) {
+
+          let photoUrl = null;
+
+          const {
+            data: signedData,
+            error: signedError
+          } =
+            await supabaseClient.storage
+              .from("family-photos")
+              .createSignedUrl(
+                post.photo_url,
+                60 * 60
+              );
+
+          if (
+            !signedError &&
+            signedData
+          ) {
+            photoUrl =
+              signedData.signedUrl;
+          }
+
+          if (photoUrl) {
+
+            html += `
+              <img
+                src="${photoUrl}"
+                alt="Family photo"
+              >
+            `;
+          }
+        }
+
+
+        /* =======================================
+           MESSAGE
+           ======================================= */
+
+        if (post.message) {
+
+          html += `
+            <div class="message">
+              ${escapeHtml(post.message)}
+            </div>
+          `;
+        }
+
+
+        /* =======================================
+           DATE
+           ======================================= */
+
+        const date =
+          new Date(
+            post.created_at
+          ).toLocaleDateString(
+            undefined,
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric"
+            }
+          );
+
+
+        /* =======================================
+           LOCATION
+           ======================================= */
+
+        html += `
+          <div class="meta">
+            ${date}
+            ${
+              post.location
+                ? " · " +
+                  escapeHtml(post.location)
+                : ""
+            }
+          </div>
+        `;
+
+        card.innerHTML =
+          html;
+
+        postsContainer.appendChild(
+          card
+        );
+      }
     }
-  );
 
-  function escapeHtml(text) {
 
-    const div =
-      document.createElement(
-        "div"
-      );
+    /* =========================================
+       CREATE NEW POST
+       ========================================= */
 
-    div.textContent =
-      text;
+    postButton.addEventListener(
+      "click",
+      async () => {
 
-    return div.innerHTML;
+        const file =
+          document
+            .getElementById("photo")
+            .files[0];
 
-  }
+        const message =
+          document
+            .getElementById("message")
+            .value
+            .trim();
 
-</script>
+        const location =
+          document
+            .getElementById("location")
+            .value
+            .trim();
 
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js")
-        .then(() => console.log("Service worker registered"))
-        .catch(error => console.error("Service worker registration failed:", error));
-    });
-  }
-</script>
+        const postMessage =
+          document.getElementById("postMessage");
+
+        postButton.disabled = true;
+
+        postMessage.textContent =
+          "Sharing your moment... 🫶";
+
+        let photoPath = null;
+
+
+        /* =======================================
+           UPLOAD PHOTO
+           ======================================= */
+
+        if (file) {
+
+          const fileExtension =
+            file.name.includes(".")
+              ? file.name
+                  .split(".")
+                  .pop()
+              : "jpg";
+
+          const fileName =
+            Date.now() +
+            "-" +
+            crypto.randomUUID() +
+            "." +
+            fileExtension;
+
+          const {
+            error: uploadError
+          } =
+            await supabaseClient.storage
+              .from("family-photos")
+              .upload(
+                fileName,
+                file,
+                {
+                  contentType: file.type,
+                  upsert: false
+                }
+              );
+
+          if (uploadError) {
+
+            console.error(uploadError);
+
+            postMessage.textContent =
+              "Photo upload failed: " +
+              uploadError.message;
+
+            postButton.disabled = false;
+
+            return;
+          }
+
+          photoPath =
+            fileName;
+        }
+
+
+        /* =======================================
+           INSERT POST
+           ======================================= */
+
+        const { error } =
+          await supabaseClient
+            .from("posts")
+            .insert({
+              message: message || null,
+              photo_url: photoPath,
+              location: location || null
+            });
+
+        if (error) {
+
+          console.error(error);
+
+          postMessage.textContent =
+            "Post failed: " +
+            error.message;
+
+          postButton.disabled = false;
+
+          return;
+        }
+
+
+        /* =======================================
+           RESET FORM
+           ======================================= */
+
+        document.getElementById("photo").value = "";
+
+        document.getElementById("message").value = "";
+
+        document.getElementById("location").value = "";
+
+        postMessage.textContent =
+          "Shared with the family! 🩷";
+
+        postButton.disabled = false;
+
+
+        /* =======================================
+           REFRESH
+           ======================================= */
+
+        loadPosts();
+      }
+    );
+
+
+    /* =========================================
+       ESCAPE TEXT
+       ========================================= */
+
+    function escapeHtml(text) {
+
+      const div =
+        document.createElement("div");
+
+      div.textContent =
+        text;
+
+      return div.innerHTML;
+    }
+  </script>
+
+
+  <!-- SERVICE WORKER -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("./service-worker.js")
+          .then(() => {
+            console.log("Service worker registered");
+          })
+          .catch(error => {
+            console.error(
+              "Service worker registration failed:",
+              error
+            );
+          });
+      });
+    }
+  </script>
 
 </body>
 </html>
