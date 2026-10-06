@@ -1,285 +1,490 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Family ❤️</title>
 
-    <title>Our Family</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f4ef;
+      color: #333;
+    }
 
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f7f5f2;
-            color: #292725;
-        }
+    header {
+      background: white;
+      padding: 28px 20px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
 
-        header {
-            background: white;
-            padding: 28px 20px 22px;
-            text-align: center;
-            border-bottom: 1px solid #ebe7e2;
-        }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
 
-        .heart {
-            font-size: 30px;
-            margin-bottom: 5px;
-        }
+    header p {
+      margin: 8px 0 0;
+      color: #777;
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 27px;
-            font-weight: 600;
-        }
+    .container {
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 25px 16px 100px;
+    }
 
-        header p {
-            margin: 7px 0 0;
-            color: #88827b;
-            font-size: 15px;
-        }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
 
-        main {
-            max-width: 650px;
-            margin: 0 auto;
-            padding: 25px 16px 100px;
-        }
+    .top-bar h2 {
+      margin: 0;
+      font-size: 22px;
+    }
 
-        .welcome {
-            margin-bottom: 25px;
-        }
+    button {
+      border: none;
+      border-radius: 20px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-        .welcome h2 {
-            margin: 0 0 6px;
-            font-size: 21px;
-            font-weight: 600;
-        }
+    .login-button,
+    .post-button {
+      background: #333;
+      color: white;
+    }
 
-        .welcome p {
-            margin: 0;
-            color: #77716b;
-            font-size: 15px;
-        }
+    .logout-button {
+      background: #eee;
+      color: #333;
+    }
 
-        .post {
-            background: white;
-            border-radius: 18px;
-            margin-bottom: 25px;
-            overflow: hidden;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
-        }
+    .post-card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
 
-        .post-content {
-            padding: 18px 19px 20px;
-        }
+    .post-card img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      display: block;
+    }
 
-        .post-date {
-            font-size: 12px;
-            color: #a09a94;
-            margin-bottom: 8px;
-        }
+    .message {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
 
-        .post-text {
-            font-size: 16px;
-            line-height: 1.55;
-        }
+    .meta {
+      color: #888;
+      font-size: 13px;
+    }
 
-        .location {
-            font-size: 13px;
-            color: #77716b;
-            margin-top: 12px;
-        }
+    .login-box,
+    .new-post-box {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
 
-        .empty {
-            text-align: center;
-            padding: 50px 20px;
-            color: #99938d;
-        }
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-family: inherit;
+      font-size: 15px;
+    }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #99938d;
-        }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
 
-        nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 65px;
-            background: rgba(255,255,255,0.96);
-            border-top: 1px solid #e8e4df;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .hidden {
+      display: none;
+    }
 
-        nav span {
-            font-size: 14px;
-            color: #55504b;
-        }
-    </style>
+    .empty {
+      text-align: center;
+      color: #888;
+      padding: 30px 10px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1px solid #eee;
+      text-align: center;
+      padding: 14px;
+    }
+  </style>
 </head>
 
 <body>
 
-    <header>
-        <div class="heart">❤️</div>
-        <h1>Our Family</h1>
-        <p>Little moments from Austria</p>
-    </header>
+<header>
+  <h1>❤️ Our Family</h1>
+  <p>Little moments from Austria</p>
+</header>
 
-    <main>
+<div class="container">
 
-        <div class="welcome">
-            <h2>Latest updates</h2>
-            <p>Sharing a little piece of our everyday life with you.</p>
-        </div>
+  <div class="top-bar">
+    <h2>Latest Updates</h2>
+    <button id="loginButton" class="login-button">Log in</button>
+    <button id="logoutButton" class="logout-button hidden">Log out</button>
+  </div>
 
-        <div id="posts">
-            <div class="loading">
-                Loading family updates...
-            </div>
-        </div>
+  <div id="loginBox" class="login-box hidden">
+    <h3>Family Login</h3>
 
-    </main>
+    <input
+      type="email"
+      id="email"
+      placeholder="Email"
+    >
 
-    <nav>
-        <span>❤️ Our Family</span>
-    </nav>
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+    >
 
+    <button id="submitLogin" class="login-button">
+      Log in
+    </button>
 
-    <script>
+    <p id="loginMessage"></p>
+  </div>
 
-        // -----------------------------------------
-        // SUPABASE CONNECTION
-        // -----------------------------------------
+  <div id="newPostBox" class="new-post-box hidden">
+    <h3>＋ New Update</h3>
 
-        const SUPABASE_URL =
-            "https://efwhuwmnsikapsotlauy.supabase.co";
+    <input
+      type="file"
+      id="photo"
+      accept="image/*"
+    >
 
-        const SUPABASE_KEY =
-            "sb_publishable_71zpw_6tibul5KHmbaBE6A_BYGVb5FG";
+    <textarea
+      id="message"
+      placeholder="Write something for the family..."
+    ></textarea>
 
-        const supabaseClient =
-            supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <input
+      type="text"
+      id="location"
+      placeholder="Location (optional)"
+    >
 
+    <button id="postButton" class="post-button">
+      Post Update
+    </button>
 
-        // -----------------------------------------
-        // LOAD POSTS
-        // -----------------------------------------
+    <p id="postMessage"></p>
+  </div>
 
-        async function loadPosts() {
+  <div id="posts">
+    <div class="empty">Loading family updates...</div>
+  </div>
 
-            const container = document.getElementById("posts");
+</div>
 
-            const { data, error } = await supabaseClient
-                .from("posts")
-                .select("*")
-                .order("created_at", { ascending: false });
+<div class="bottom-nav">
+  ❤️ Our Family
+</div>
 
+<script>
+  const SUPABASE_URL =
+    "https://efwhuwmnsikapsotlauy.supabase.co";
 
-            if (error) {
+  const SUPABASE_KEY =
+    "sb_publishable_71zpw_6tibul5KHmbaBE6A_BYGVb5FG";
 
-                container.innerHTML = `
-                    <div class="empty">
-                        Could not load updates.
-                    </div>
-                `;
-
-                console.error(error);
-                return;
-            }
-
-
-            if (!data || data.length === 0) {
-
-                container.innerHTML = `
-                    <div class="empty">
-                        No family updates yet. ❤️
-                    </div>
-                `;
-
-                return;
-            }
-
-
-            container.innerHTML = "";
-
-
-            data.forEach(post => {
-
-                const date = new Date(post.created_at)
-                    .toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric"
-                    });
+  const supabaseClient =
+    supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
-                const article = document.createElement("div");
-
-                article.className = "post";
-
-
-                article.innerHTML = `
-
-                    <div class="post-content">
-
-                        <div class="post-date">
-                            ${date}
-                        </div>
-
-                        <div class="post-text">
-                            ${escapeHtml(post.message || "")}
-                        </div>
-
-                        ${
-                            post.location
-                            ? `<div class="location">
-                                📍 ${escapeHtml(post.location)}
-                               </div>`
-                            : ""
-                        }
-
-                    </div>
-
-                `;
+  const loginButton = document.getElementById("loginButton");
+  const logoutButton = document.getElementById("logoutButton");
+  const loginBox = document.getElementById("loginBox");
+  const newPostBox = document.getElementById("newPostBox");
+  const submitLogin = document.getElementById("submitLogin");
+  const postButton = document.getElementById("postButton");
 
 
-                container.appendChild(article);
-
-            });
-
-        }
+  loginButton.addEventListener("click", () => {
+    loginBox.classList.toggle("hidden");
+  });
 
 
-        // -----------------------------------------
-        // SECURITY
-        // -----------------------------------------
+  submitLogin.addEventListener("click", async () => {
 
-        function escapeHtml(text) {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const loginMessage = document.getElementById("loginMessage");
 
-            const div = document.createElement("div");
+    loginMessage.textContent = "Logging in...";
 
-            div.textContent = text;
+    const { error } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
 
-            return div.innerHTML;
+    if (error) {
+      loginMessage.textContent = error.message;
+      return;
+    }
 
-        }
+    loginMessage.textContent = "Logged in!";
+  });
 
 
-        // Start app
+  logoutButton.addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+  });
+
+
+  supabaseClient.auth.onAuthStateChange(
+    async (event, session) => {
+
+      if (session) {
+
+        loginButton.classList.add("hidden");
+        logoutButton.classList.remove("hidden");
+
+        loginBox.classList.add("hidden");
+        newPostBox.classList.remove("hidden");
 
         loadPosts();
 
-    </script>
+      } else {
+
+        loginButton.classList.remove("hidden");
+        logoutButton.classList.add("hidden");
+
+        newPostBox.classList.add("hidden");
+
+        loadPosts();
+
+      }
+
+    }
+  );
+
+
+  async function loadPosts() {
+
+    const postsContainer =
+      document.getElementById("posts");
+
+    postsContainer.innerHTML =
+      '<div class="empty">Loading family updates...</div>';
+
+    const { data, error } =
+      await supabaseClient
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+
+      postsContainer.innerHTML =
+        '<div class="empty">Please log in to view family updates. ❤️</div>';
+
+      return;
+    }
+
+    if (!data || data.length === 0) {
+
+      postsContainer.innerHTML =
+        '<div class="empty">No family updates yet. ❤️</div>';
+
+      return;
+    }
+
+    postsContainer.innerHTML = "";
+
+    data.forEach(post => {
+
+      const card =
+        document.createElement("div");
+
+      card.className = "post-card";
+
+      let html = "";
+
+      if (post.photo_url) {
+        html += `
+          <img
+            src="${post.photo_url}"
+            alt="Family photo"
+          >
+        `;
+      }
+
+      if (post.message) {
+        html += `
+          <div class="message">
+            ${escapeHtml(post.message)}
+          </div>
+        `;
+      }
+
+      const date =
+        new Date(post.created_at).toLocaleDateString(
+          undefined,
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+          }
+        );
+
+      html += `
+        <div class="meta">
+          ${date}
+          ${post.location ? " · " + escapeHtml(post.location) : ""}
+        </div>
+      `;
+
+      card.innerHTML = html;
+
+      postsContainer.appendChild(card);
+
+    });
+
+  }
+
+
+  postButton.addEventListener("click", async () => {
+
+    const file =
+      document.getElementById("photo").files[0];
+
+    const message =
+      document.getElementById("message").value;
+
+    const location =
+      document.getElementById("location").value;
+
+    const postMessage =
+      document.getElementById("postMessage");
+
+    postMessage.textContent = "Posting...";
+
+    let photoUrl = null;
+
+
+    if (file) {
+
+      const fileName =
+        Date.now() + "-" +
+        file.name.replace(/\s+/g, "-");
+
+      const { error: uploadError } =
+        await supabaseClient.storage
+          .from("family-photos")
+          .upload(fileName, file);
+
+      if (uploadError) {
+
+        postMessage.textContent =
+          "Photo upload failed: " +
+          uploadError.message;
+
+        return;
+      }
+
+
+      const { data: signedData, error: signedError } =
+        await supabaseClient.storage
+          .from("family-photos")
+          .createSignedUrl(fileName, 60 * 60 * 24 * 365);
+
+      if (signedError) {
+
+        postMessage.textContent =
+          "Could not create photo link.";
+
+        return;
+      }
+
+      photoUrl = signedData.signedUrl;
+
+    }
+
+
+    const { error } =
+      await supabaseClient
+        .from("posts")
+        .insert({
+          message: message || null,
+          photo_url: photoUrl,
+          location: location || null
+        });
+
+
+    if (error) {
+
+      postMessage.textContent =
+        "Post failed: " + error.message;
+
+      return;
+    }
+
+
+    document.getElementById("photo").value = "";
+    document.getElementById("message").value = "";
+    document.getElementById("location").value = "";
+
+    postMessage.textContent =
+      "Posted! ❤️";
+
+    loadPosts();
+
+  });
+
+
+  function escapeHtml(text) {
+
+    const div =
+      document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+  }
+
+</script>
 
 </body>
 </html>
