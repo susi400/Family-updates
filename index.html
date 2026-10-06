@@ -18,38 +18,22 @@
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
   <style>
 
-    /* =========================================
-       DESIGN SYSTEM
-       ========================================= */
-
     :root {
-
-      --background: #FDC7D4;
-
+      --background: #F1E5D7;
       --header-color: #930527;
-
       --button-color: #550317;
-
       --card-color: #FFFFFF;
-
       --text-color: #333333;
-
       --secondary-text: #777777;
-
-      --border-color: #F0DDE2;
+      --border-color: #E8D8CC;
 
       --soft-shadow:
         0 5px 20px rgba(84, 3, 23, 0.10);
 
-      --very-rounded:
-        24px;
-
-      --button-rounded:
-        30px;
-
+      --very-rounded: 24px;
+      --button-rounded: 30px;
     }
 
 
@@ -61,9 +45,7 @@
       box-sizing: border-box;
     }
 
-
     body {
-
       margin: 0;
 
       font-family:
@@ -81,7 +63,6 @@
 
       line-height:
         1.45;
-
     }
 
 
@@ -90,7 +71,6 @@
        ========================================= */
 
     header {
-
       background:
         var(--card-color);
 
@@ -105,14 +85,10 @@
 
       box-shadow:
         0 3px 15px rgba(84, 3, 23, 0.06);
-
     }
 
-
     header h1 {
-
-      margin:
-        0;
+      margin: 0;
 
       font-family:
         "Raleway",
@@ -129,14 +105,11 @@
 
       line-height:
         1.2;
-
     }
 
-
     header p {
-
       margin:
-        12px 0 0;
+        12px auto 0;
 
       font-family:
         "Montserrat",
@@ -148,6 +121,11 @@
       color:
         var(--secondary-text);
 
+      max-width:
+        650px;
+
+      line-height:
+        1.4;
     }
 
 
@@ -156,7 +134,6 @@
        ========================================= */
 
     .container {
-
       max-width:
         700px;
 
@@ -164,8 +141,7 @@
         0 auto;
 
       padding:
-        30px 18px 110px;
-
+        30px 18px 50px;
     }
 
 
@@ -174,7 +150,6 @@
        ========================================= */
 
     .top-bar {
-
       display:
         flex;
 
@@ -189,14 +164,10 @@
 
       margin-bottom:
         25px;
-
     }
 
-
     .top-bar h2 {
-
-      margin:
-        0;
+      margin: 0;
 
       font-family:
         "Raleway",
@@ -210,7 +181,6 @@
 
       color:
         var(--header-color);
-
     }
 
 
@@ -219,7 +189,6 @@
        ========================================= */
 
     button {
-
       border:
         none;
 
@@ -245,21 +214,15 @@
       transition:
         transform 0.15s ease,
         box-shadow 0.15s ease;
-
     }
-
 
     button:hover {
-
       transform:
         translateY(-1px);
-
     }
-
 
     .login-button,
     .post-button {
-
       background:
         var(--button-color);
 
@@ -268,12 +231,9 @@
 
       box-shadow:
         0 4px 12px rgba(85, 3, 23, 0.18);
-
     }
 
-
     .logout-button {
-
       background:
         white;
 
@@ -282,12 +242,9 @@
 
       box-shadow:
         var(--soft-shadow);
-
     }
 
-
     .post-button {
-
       width:
         100%;
 
@@ -296,18 +253,14 @@
 
       padding:
         16px 22px;
-
     }
 
-
     .post-button:disabled {
-
       opacity:
         0.6;
 
       cursor:
         not-allowed;
-
     }
 
 
@@ -316,7 +269,6 @@
        ========================================= */
 
     .post-card {
-
       background:
         var(--card-color);
 
@@ -334,12 +286,9 @@
 
       overflow:
         hidden;
-
     }
 
-
     .post-card img {
-
       width:
         100%;
 
@@ -360,7 +309,6 @@
 
       background:
         #fafafa;
-
     }
 
 
@@ -369,7 +317,6 @@
        ========================================= */
 
     .message {
-
       font-family:
         "Montserrat",
         sans-serif;
@@ -388,12 +335,9 @@
 
       color:
         var(--text-color);
-
     }
 
-
     .meta {
-
       font-family:
         "Montserrat",
         sans-serif;
@@ -403,7 +347,6 @@
 
       color:
         var(--secondary-text);
-
     }
 
 
@@ -413,7 +356,6 @@
 
     .login-box,
     .new-post-box {
-
       background:
         var(--card-color);
 
@@ -428,13 +370,10 @@
 
       box-shadow:
         var(--soft-shadow);
-
     }
-
 
     .login-box h3,
     .new-post-box h3 {
-
       margin-top:
         0;
 
@@ -450,7 +389,6 @@
 
       color:
         var(--header-color);
-
     }
 
 
@@ -460,7 +398,6 @@
 
     input,
     textarea {
-
       width:
         100%;
 
@@ -491,48 +428,37 @@
 
       outline:
         none;
-
     }
-
 
     input:focus,
     textarea:focus {
-
       border-color:
         var(--header-color);
-
     }
 
-
     textarea {
-
       min-height:
         130px;
 
       resize:
         vertical;
-
     }
 
-
     input[type="file"] {
-
       padding:
         13px;
 
       font-size:
         17px;
-
     }
 
 
     /* =========================================
-       LOGIN MESSAGE / POST MESSAGE
+       MESSAGES
        ========================================= */
 
     #loginMessage,
     #postMessage {
-
       font-size:
         16px;
 
@@ -541,7 +467,6 @@
 
       margin-bottom:
         0;
-
     }
 
 
@@ -550,7 +475,6 @@
        ========================================= */
 
     .empty {
-
       text-align:
         center;
 
@@ -562,7 +486,6 @@
 
       font-size:
         20px;
-
     }
 
 
@@ -571,87 +494,40 @@
        ========================================= */
 
     .hidden {
-
       display:
         none;
-
     }
 
 
     /* =========================================
-       BOTTOM NAVIGATION
-       ========================================= */
-
-    .bottom-nav {
-
-      position:
-        fixed;
-
-      bottom:
-        0;
-
-      left:
-        0;
-
-      right:
-        0;
-
-      background:
-        white;
-
-      border-top:
-        1px solid var(--border-color);
-
-      text-align:
-        center;
-
-      padding:
-        16px;
-
-      font-family:
-        "Raleway",
-        sans-serif;
-
-      font-size:
-        19px;
-
-      font-weight:
-        600;
-
-      color:
-        var(--header-color);
-
-      box-shadow:
-        0 -4px 15px rgba(84, 3, 23, 0.07);
-
-    }
-
-
-    /* =========================================
-       MOBILE / SMALL SCREEN
+       MOBILE
        ========================================= */
 
     @media (max-width: 600px) {
 
       body {
-        font-size: 24px;
+        font-size:
+          24px;
       }
 
       header h1 {
-        font-size: 30px;
+        font-size:
+          30px;
       }
 
       .top-bar h2 {
-        font-size: 30px;
+        font-size:
+          30px;
       }
 
       .message {
-        font-size: 24px;
+        font-size:
+          24px;
       }
 
       .container {
         padding:
-          25px 14px 100px;
+          25px 14px 50px;
       }
 
     }
@@ -675,7 +551,7 @@
     </h1>
 
     <p>
-      Happy memories 🫶
+      Use this to share updated pictures and your favourite stories
     </p>
 
   </header>
@@ -815,15 +691,6 @@
 
     </div>
 
-  </div>
-
-
-  <!-- =========================================
-       BOTTOM NAV
-       ========================================= -->
-
-  <div class="bottom-nav">
-    🫶 Our happy moments
   </div>
 
 
