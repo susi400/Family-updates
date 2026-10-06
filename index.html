@@ -6,6 +6,8 @@
 
     <title>Our Family</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -19,7 +21,7 @@
         }
 
         header {
-            background: #ffffff;
+            background: white;
             padding: 28px 20px 22px;
             text-align: center;
             border-bottom: 1px solid #ebe7e2;
@@ -72,12 +74,6 @@
             box-shadow: 0 3px 15px rgba(0,0,0,0.06);
         }
 
-        .post img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
         .post-content {
             padding: 18px 19px 20px;
         }
@@ -101,9 +97,14 @@
 
         .empty {
             text-align: center;
-            padding: 35px 20px;
+            padding: 50px 20px;
             color: #99938d;
-            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #99938d;
         }
 
         nav {
@@ -141,31 +142,10 @@
             <p>Sharing a little piece of our everyday life with you.</p>
         </div>
 
-        <div class="post">
-
-            <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1000&q=80">
-
-            <div class="post-content">
-
-                <div class="post-date">
-                    October 6, 2026
-                </div>
-
-                <div class="post-text">
-                    Hello from Austria! 🇦🇹
-                    <br><br>
-                    This is our new little family update page. We're excited to share photos and little updates with you here. ❤️
-                </div>
-
-                <div class="location">
-                    📍 Austria
-                </div>
-
+        <div id="posts">
+            <div class="loading">
+                Loading family updates...
             </div>
-        </div>
-
-        <div class="empty">
-            More family updates will appear here.
         </div>
 
     </main>
@@ -173,6 +153,133 @@
     <nav>
         <span>❤️ Our Family</span>
     </nav>
+
+
+    <script>
+
+        // -----------------------------------------
+        // SUPABASE CONNECTION
+        // -----------------------------------------
+
+        const SUPABASE_URL =
+            "https://efwhuwmnsikapsotlauy.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_71zpw_6tibul5KHmbaBE6A_BYGVb5FG";
+
+        const supabaseClient =
+            supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+        // -----------------------------------------
+        // LOAD POSTS
+        // -----------------------------------------
+
+        async function loadPosts() {
+
+            const container = document.getElementById("posts");
+
+            const { data, error } = await supabaseClient
+                .from("posts")
+                .select("*")
+                .order("created_at", { ascending: false });
+
+
+            if (error) {
+
+                container.innerHTML = `
+                    <div class="empty">
+                        Could not load updates.
+                    </div>
+                `;
+
+                console.error(error);
+                return;
+            }
+
+
+            if (!data || data.length === 0) {
+
+                container.innerHTML = `
+                    <div class="empty">
+                        No family updates yet. ❤️
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            container.innerHTML = "";
+
+
+            data.forEach(post => {
+
+                const date = new Date(post.created_at)
+                    .toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    });
+
+
+                const article = document.createElement("div");
+
+                article.className = "post";
+
+
+                article.innerHTML = `
+
+                    <div class="post-content">
+
+                        <div class="post-date">
+                            ${date}
+                        </div>
+
+                        <div class="post-text">
+                            ${escapeHtml(post.message || "")}
+                        </div>
+
+                        ${
+                            post.location
+                            ? `<div class="location">
+                                📍 ${escapeHtml(post.location)}
+                               </div>`
+                            : ""
+                        }
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(article);
+
+            });
+
+        }
+
+
+        // -----------------------------------------
+        // SECURITY
+        // -----------------------------------------
+
+        function escapeHtml(text) {
+
+            const div = document.createElement("div");
+
+            div.textContent = text;
+
+            return div.innerHTML;
+
+        }
+
+
+        // Start app
+
+        loadPosts();
+
+    </script>
 
 </body>
 </html>
