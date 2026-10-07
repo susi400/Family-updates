@@ -249,6 +249,38 @@
       border-top: 1px solid var(--border);
     }
 
+    .reactions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .reaction-button {
+      background: #fffaf7;
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: none;
+      border-radius: 14px;
+      padding: 7px 9px;
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .reaction-button:hover {
+      background: #f8eee7;
+    }
+
+    .reaction-button.active {
+      background: #f1d9df;
+      border-color: var(--header);
+    }
+
+    .reaction-count {
+      font-size: 13px;
+      margin-left: 2px;
+    }
+
     .empty-state {
       text-align: center;
       color: var(--soft-text);
@@ -299,6 +331,10 @@
       .post-footer {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .reactions {
+        width: 100%;
       }
     }
   </style>
@@ -464,6 +500,20 @@
         SUPABASE_URL,
         SUPABASE_KEY
       );
+
+
+    // --------------------------------------------------
+    // REACTIONS
+    // --------------------------------------------------
+
+    const REACTIONS = [
+      "🥰",
+      "😂",
+      "😭",
+      "😱",
+      "🩷",
+      "🩵"
+    ];
 
 
     // --------------------------------------------------
@@ -661,6 +711,269 @@
 
 
     // --------------------------------------------------
+    // LOAD REACTIONS
+    // --------------------------------------------------
+
+    async function getReactionData(postIds) {
+
+      const reactionData = {};
+
+      for (const postId of postIds) {
+        reactionData[postId] = {
+          counts: {},
+          userReaction: null
+        };
+
+        for (const reaction of REACTIONS) {
+          reactionData[postId].counts[reaction] = 0;
+        }
+      }
+
+
+      if (postIds.length === 0) {
+        return reactionData;
+      }
+
+
+      const {
+        data: reactions,
+        error
+      } = await supabaseClient
+        .from("reactions")
+        .select("post_id, user_id, reaction")
+        .in("post_id", postIds);
+
+
+      if (error) {
+
+        console.error(
+          "Could not load reactions:",
+          error
+        );
+
+        return reactionData;
+      }
+
+
+      const {
+        data: userData
+      } = await supabaseClient.auth.getUser();
+
+      const currentUserId =
+        userData?.user?.id || null;
+
+
+      for (const reaction of reactions || []) {
+
+        if (!reactionData[reaction.post_id]) {
+          continue;
+        }
+
+
+        if (
+          reactionData[reaction.post_id]
+            .counts[reaction.reaction] !== undefined
+        ) {
+
+          reactionData[reaction.post_id]
+            .counts[reaction.reaction]++;
+        }
+
+
+        if (
+          currentUserId &&
+          reaction.user_id === currentUserId
+        ) {
+
+          reactionData[reaction.post_id]
+            .userReaction = reaction.reaction;
+        }
+      }
+
+
+      return reactionData;
+    }
+
+
+    // --------------------------------------------------
+    // REACTION HTML
+    // --------------------------------------------------
+
+    function createReactionHtml(
+      postId,
+      reactionInfo
+    ) {
+
+      return `
+        <div class="reactions">
+
+          ${REACTIONS.map(reaction => {
+
+            const count =
+              reactionInfo.counts[reaction] || 0;
+
+            const active =
+              reactionInfo.userReaction === reaction
+                ? "active"
+                : "";
+
+            return `
+              <button
+                class="reaction-button ${active}"
+                onclick="toggleReaction('${postId}', '${reaction}')"
+                aria-label="React ${reaction}"
+              >
+                ${reaction}
+                <span class="reaction-count">
+                  ${count}
+                </span>
+              </button>
+            `;
+
+          }).join("")}
+
+        </div>
+      `;
+    }
+
+
+    // --------------------------------------------------
+    // TOGGLE REACTION
+    // --------------------------------------------------
+
+    async function toggleReaction(
+      postId,
+      reaction
+    ) {
+
+      const {
+        data: userData
+      } = await supabaseClient.auth.getUser();
+
+
+      const user =
+        userData?.user;
+
+
+      if (!user) {
+
+        alert(
+          "Please log in to react to updates."
+        );
+
+        return;
+      }
+
+
+      const {
+        data: existingReaction,
+        error: findError
+      } = await supabaseClient
+        .from("reactions")
+        .select("id, reaction")
+        .eq("post_id", postId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+
+      if (findError) {
+
+        alert(
+          "Could not check your reaction: " +
+          findError.message
+        );
+
+        return;
+      }
+
+
+      // Tapping the same reaction removes it
+      if (
+        existingReaction &&
+        existingReaction.reaction === reaction
+      ) {
+
+        const {
+          error
+        } = await supabaseClient
+          .from("reactions")
+          .delete()
+          .eq("id", existingReaction.id);
+
+
+        if (error) {
+
+          alert(
+            "Could not remove your reaction: " +
+            error.message
+          );
+
+          return;
+        }
+
+
+        await loadPosts();
+        return;
+      }
+
+
+      // If another reaction exists, change it
+      if (existingReaction) {
+
+        const {
+          error
+        } = await supabaseClient
+          .from("reactions")
+          .update({
+            reaction: reaction
+          })
+          .eq("id", existingReaction.id);
+
+
+        if (error) {
+
+          alert(
+            "Could not change your reaction: " +
+            error.message
+          );
+
+          return;
+        }
+
+
+        await loadPosts();
+        return;
+      }
+
+
+      // Otherwise create a new reaction
+      const {
+        error
+      } = await supabaseClient
+        .from("reactions")
+        .insert({
+          post_id: postId,
+          user_id: user.id,
+          reaction: reaction
+        });
+
+
+      if (error) {
+
+        alert(
+          "Could not add your reaction: " +
+          error.message
+        );
+
+        return;
+      }
+
+
+      await loadPosts();
+    }
+
+
+    // --------------------------------------------------
     // LOAD POSTS
     // --------------------------------------------------
 
@@ -717,6 +1030,14 @@
 
         return;
       }
+
+
+      // Load all reactions for the visible posts
+      const postIds =
+        data.map(post => post.id);
+
+      const reactionData =
+        await getReactionData(postIds);
 
 
       feed.innerHTML = "";
@@ -834,6 +1155,24 @@
 
 
         // ----------------------------------------------
+        // REACTIONS
+        // ----------------------------------------------
+
+        const postReactionData =
+          reactionData[post.id] || {
+            counts: {},
+            userReaction: null
+          };
+
+
+        const reactionsHtml =
+          createReactionHtml(
+            post.id,
+            postReactionData
+          );
+
+
+        // ----------------------------------------------
         // POST
         // ----------------------------------------------
 
@@ -855,7 +1194,7 @@
 
           <div class="post-footer">
 
-            <div></div>
+            ${reactionsHtml}
 
             <button
               class="delete-button"
