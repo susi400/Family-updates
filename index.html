@@ -517,7 +517,24 @@
 >
   🖼️ Slideshow
 </button>
+<div id="slideshow-modal" class="slideshow-modal">
+  <div class="slideshow-content">
+    <button
+      class="slideshow-close"
+      onclick="closeSlideshow()"
+    >
+      ✕
+    </button>
 
+    <div id="slideshow-slide"></div>
+
+    <div class="slideshow-controls">
+      <button onclick="previousSlide()">←</button>
+      <button onclick="toggleSlideshow()">⏸️</button>
+      <button onclick="nextSlide()">→</button>
+    </div>
+  </div>
+</div>
     <div id="newPostCard" class="card new-post-card">
 
       <h3>Share a message</h3>
