@@ -11,6 +11,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Raleway:wght@500;600;700&display=swap"
     rel="stylesheet"
@@ -385,67 +386,107 @@
     .hidden {
       display: none !important;
     }
-.slideshow-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.92);
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
 
-.slideshow-content {
-  width: 100%;
-  max-width: 900px;
-  max-height: 95vh;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+    /* SLIDESHOW */
 
-.slideshow-close {
-  position: absolute;
-  top: -10px;
-  right: 0;
-  z-index: 2;
-  background: rgba(255, 255, 255, 0.9);
-  color: #930527;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  font-size: 20px;
-}
+    .slideshow-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.94);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
 
-#slideshow-slide {
-  width: 100%;
-  max-height: 80vh;
-  overflow: auto;
-  text-align: center;
-}
+    .slideshow-content {
+      width: 100%;
+      max-width: 1100px;
+      max-height: 95vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
 
-#slideshow-slide img {
-  max-width: 100%;
-  max-height: 65vh;
-  object-fit: contain;
-  border-radius: 14px;
-}
+    .slideshow-close {
+      position: absolute;
+      top: -5px;
+      right: 0;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.95);
+      color: #930527;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      font-size: 20px;
+      box-shadow: none;
+    }
 
-.slideshow-controls {
-  display: flex;
-  gap: 12px;
-  margin-top: 18px;
-}
+    #slideshow-slide {
+      width: 100%;
+      max-height: 82vh;
+      overflow: auto;
+      text-align: center;
+      color: white;
+      padding: 10px 50px;
+    }
 
-.slideshow-controls button {
-  min-width: 48px;
-  min-height: 44px;
-}
+    #slideshow-slide img {
+      display: block;
+      max-width: 100%;
+      max-height: 62vh;
+      object-fit: contain;
+      border-radius: 14px;
+      margin: 0 auto 18px;
+    }
+
+    .slideshow-message {
+      color: white;
+      font-size: 30px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 15px auto;
+      max-width: 850px;
+    }
+
+    .slideshow-meta {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+
+    .slideshow-counter {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .slideshow-controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slideshow-controls button {
+      min-width: 52px;
+      min-height: 46px;
+      padding: 10px 15px;
+    }
+
+    .slideshow-controls .slideshow-play {
+      min-width: 100px;
+    }
+
     @media (max-width: 600px) {
+
       header {
         padding: 26px 18px 24px;
       }
@@ -502,6 +543,23 @@
         flex-direction: column;
         gap: 3px;
       }
+
+      #slideshow-slide {
+        padding: 10px 15px;
+      }
+
+      #slideshow-slide img {
+        max-height: 55vh;
+      }
+
+      .slideshow-message {
+        font-size: 23px;
+      }
+
+      .slideshow-close {
+        top: -5px;
+        right: 0;
+      }
     }
   </style>
 </head>
@@ -519,6 +577,7 @@
       <h2>Latest Updates</h2>
 
       <div class="button-row" style="margin-top: 0;">
+
         <button id="loginToggleButton" onclick="toggleLogin()">
           Log in
         </button>
@@ -530,8 +589,10 @@
         >
           Log out
         </button>
+
       </div>
     </div>
+
 
     <!-- LOGIN -->
 
@@ -539,7 +600,9 @@
 
       <h3>Log in 🩷</h3>
 
-      <label for="email">Email</label>
+      <label for="email">
+        Email
+      </label>
 
       <input
         id="email"
@@ -548,7 +611,9 @@
         placeholder="Your email"
       >
 
-      <label for="password">Password</label>
+      <label for="password">
+        Password
+      </label>
 
       <input
         id="password"
@@ -568,33 +633,77 @@
     </div>
 
 
-    <!-- NEW POST -->
-    <button
-  id="slideshow-button"
-  class="secondary-button"
-  onclick="openSlideshow()"
->
-  🖼️ Slideshow
-</button>
-<div id="slideshow-modal" class="slideshow-modal">
-  <div class="slideshow-content">
-    <button
-      class="slideshow-close"
-      onclick="closeSlideshow()"
-    >
-      ✕
-    </button>
+    <!-- SLIDESHOW BUTTON -->
 
-    <div id="slideshow-slide"></div>
+    <div class="button-row" style="margin-top: 0; margin-bottom: 18px;">
 
-    <div class="slideshow-controls">
-      <button onclick="previousSlide()">←</button>
-      <button onclick="toggleSlideshow()">⏸️</button>
-      <button onclick="nextSlide()">→</button>
+      <button
+        id="slideshow-button"
+        class="secondary-button"
+        onclick="openSlideshow()"
+      >
+        🖼️ Slideshow
+      </button>
+
     </div>
-  </div>
-</div>
-    <div id="newPostCard" class="card new-post-card">
+
+
+    <!-- SLIDESHOW -->
+
+    <div
+      id="slideshow-modal"
+      class="slideshow-modal"
+    >
+
+      <div class="slideshow-content">
+
+        <button
+          class="slideshow-close"
+          onclick="closeSlideshow()"
+          aria-label="Close slideshow"
+        >
+          ✕
+        </button>
+
+        <div id="slideshow-slide"></div>
+
+        <div class="slideshow-controls">
+
+          <button
+            onclick="previousSlide()"
+            aria-label="Previous slide"
+          >
+            ←
+          </button>
+
+          <button
+            id="slideshow-play-button"
+            class="slideshow-play"
+            onclick="toggleSlideshow()"
+          >
+            ▶️ Play
+          </button>
+
+          <button
+            onclick="nextSlide()"
+            aria-label="Next slide"
+          >
+            →
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- NEW POST -->
+
+    <div
+      id="newPostCard"
+      class="card new-post-card"
+    >
 
       <h3>Share a message</h3>
 
@@ -618,7 +727,10 @@
       ></textarea>
 
       <label for="location">
-        Location <span style="font-weight:400;">(optional)</span>
+        Location
+        <span style="font-weight:400;">
+          (optional)
+        </span>
       </label>
 
       <input
@@ -632,6 +744,7 @@
       </label>
 
       <select id="expiry">
+
         <option value="forever">
           Keep forever
         </option>
@@ -643,6 +756,7 @@
         <option value="1week">
           Show for 1 week
         </option>
+
       </select>
 
       <div class="expiry-help">
@@ -650,9 +764,11 @@
       </div>
 
       <div class="button-row">
+
         <button onclick="createPost()">
           Share
         </button>
+
       </div>
 
       <div id="postStatus" class="status"></div>
@@ -707,6 +823,19 @@
 
 
     // --------------------------------------------------
+    // SLIDESHOW STATE
+    // --------------------------------------------------
+
+    let slideshowPosts = [];
+
+    let slideshowIndex = 0;
+
+    let slideshowTimer = null;
+
+    let slideshowPlaying = false;
+
+
+    // --------------------------------------------------
     // LOGIN UI
     // --------------------------------------------------
 
@@ -722,6 +851,7 @@
       } else {
 
         card.style.display = "block";
+
       }
     }
 
@@ -771,6 +901,8 @@
 
     async function logout() {
 
+      closeSlideshow();
+
       await supabaseClient.auth.signOut();
 
       document.getElementById("newPostCard").style.display =
@@ -809,6 +941,7 @@
             .classList.add("hidden");
 
           await cleanupExpiredPosts();
+
           await loadPosts();
 
         } else {
@@ -821,6 +954,7 @@
 
           document.getElementById("loginToggleButton")
             .classList.remove("hidden");
+
         }
 
       }
@@ -859,7 +993,6 @@
         return;
       }
 
-
       for (const post of expiredPosts) {
 
         if (post.photo_url) {
@@ -878,7 +1011,6 @@
             );
           }
         }
-
 
         const {
           error: deleteError
@@ -918,11 +1050,9 @@
         }
       }
 
-
       if (postIds.length === 0) {
         return reactionData;
       }
-
 
       const {
         data: reactions,
@@ -931,7 +1061,6 @@
         .from("reactions")
         .select("post_id, user_id, reaction")
         .in("post_id", postIds);
-
 
       if (error) {
 
@@ -943,7 +1072,6 @@
         return reactionData;
       }
 
-
       const {
         data: userData
       } = await supabaseClient.auth.getUser();
@@ -951,13 +1079,11 @@
       const currentUserId =
         userData?.user?.id || null;
 
-
       for (const reaction of reactions || []) {
 
         if (!reactionData[reaction.post_id]) {
           continue;
         }
-
 
         if (
           reactionData[reaction.post_id]
@@ -968,7 +1094,6 @@
             .counts[reaction.reaction]++;
         }
 
-
         if (
           currentUserId &&
           reaction.user_id === currentUserId
@@ -978,7 +1103,6 @@
             .userReaction = reaction.reaction;
         }
       }
-
 
       return reactionData;
     }
@@ -1042,7 +1166,6 @@
       const user =
         userData?.user;
 
-
       if (!user) {
 
         alert(
@@ -1051,7 +1174,6 @@
 
         return;
       }
-
 
       const {
         data: existingReaction,
@@ -1063,7 +1185,6 @@
         .eq("user_id", user.id)
         .maybeSingle();
 
-
       if (findError) {
 
         alert(
@@ -1073,7 +1194,6 @@
 
         return;
       }
-
 
       if (
         existingReaction &&
@@ -1087,7 +1207,6 @@
           .delete()
           .eq("id", existingReaction.id);
 
-
         if (error) {
 
           alert(
@@ -1098,11 +1217,10 @@
           return;
         }
 
-
         await loadPosts();
+
         return;
       }
-
 
       if (existingReaction) {
 
@@ -1115,7 +1233,6 @@
           })
           .eq("id", existingReaction.id);
 
-
         if (error) {
 
           alert(
@@ -1126,11 +1243,10 @@
           return;
         }
 
-
         await loadPosts();
+
         return;
       }
-
 
       const {
         error
@@ -1142,7 +1258,6 @@
           reaction: reaction
         });
 
-
       if (error) {
 
         alert(
@@ -1152,7 +1267,6 @@
 
         return;
       }
-
 
       await loadPosts();
     }
@@ -1167,15 +1281,12 @@
       const commentData = {};
 
       for (const postId of postIds) {
-
         commentData[postId] = [];
       }
-
 
       if (postIds.length === 0) {
         return commentData;
       }
-
 
       const {
         data: comments,
@@ -1190,7 +1301,6 @@
           ascending: true
         });
 
-
       if (error) {
 
         console.error(
@@ -1200,7 +1310,6 @@
 
         return commentData;
       }
-
 
       const {
         data: userData
@@ -1212,13 +1321,11 @@
       const currentUserEmail =
         userData?.user?.email || "";
 
-
       for (const comment of comments || []) {
 
         if (!commentData[comment.post_id]) {
           continue;
         }
-
 
         comment.isOwn =
           currentUserId === comment.user_id;
@@ -1230,7 +1337,6 @@
 
         commentData[comment.post_id].push(comment);
       }
-
 
       return commentData;
     }
@@ -1306,7 +1412,6 @@
             </div>
           `;
 
-
       return `
         <div class="comments-section">
 
@@ -1370,29 +1475,23 @@
           `comment-input-${postId}`
         );
 
-
       if (!input) {
         return;
       }
 
-
       const comment =
         input.value.trim();
-
 
       if (!comment) {
         return;
       }
 
-
       const {
         data: userData
       } = await supabaseClient.auth.getUser();
 
-
       const user =
         userData?.user;
-
 
       if (!user) {
 
@@ -1403,9 +1502,7 @@
         return;
       }
 
-
       input.disabled = true;
-
 
       const {
         error
@@ -1417,9 +1514,7 @@
           comment: comment
         });
 
-
       input.disabled = false;
-
 
       if (error) {
 
@@ -1430,7 +1525,6 @@
 
         return;
       }
-
 
       await loadPosts();
     }
@@ -1447,11 +1541,9 @@
           "Delete this comment?"
         );
 
-
       if (!confirmed) {
         return;
       }
-
 
       const {
         error
@@ -1459,7 +1551,6 @@
         .from("comments")
         .delete()
         .eq("id", commentId);
-
 
       if (error) {
 
@@ -1470,7 +1561,6 @@
 
         return;
       }
-
 
       await loadPosts();
     }
@@ -1491,10 +1581,8 @@
         </div>
       `;
 
-
       const now =
         new Date().toISOString();
-
 
       const {
         data,
@@ -1509,7 +1597,6 @@
           ascending: false
         });
 
-
       if (error) {
 
         feed.innerHTML = `
@@ -1519,9 +1606,10 @@
           </div>
         `;
 
+        slideshowPosts = [];
+
         return;
       }
-
 
       if (!data || data.length === 0) {
 
@@ -1531,11 +1619,10 @@
           </div>
         `;
 
+        slideshowPosts = [];
+
         return;
       }
-
-
-      // Load reactions
 
       const postIds =
         data.map(post => post.id);
@@ -1543,19 +1630,20 @@
       const reactionData =
         await getReactionData(postIds);
 
-
-      // Load comments
-
       const commentData =
         await getCommentData(postIds);
 
-
       feed.innerHTML = "";
 
+      // Reset slideshow data
+
+      slideshowPosts = [];
 
       for (const post of data) {
 
         let imageHtml = "";
+
+        let slideshowImageUrl = null;
 
 
         // ----------------------------------------------
@@ -1574,15 +1662,17 @@
               60 * 60
             );
 
-
           if (
             !signedError &&
             signedData?.signedUrl
           ) {
 
+            slideshowImageUrl =
+              signedData.signedUrl;
+
             imageHtml = `
               <img
-                src="${signedData.signedUrl}"
+                src="${escapeHtml(signedData.signedUrl)}"
                 alt="Family update"
               >
             `;
@@ -1674,7 +1764,6 @@
             userReaction: null
           };
 
-
         const reactionsHtml =
           createReactionHtml(
             post.id,
@@ -1689,12 +1778,23 @@
         const postComments =
           commentData[post.id] || [];
 
-
         const commentsHtml =
           createCommentHtml(
             post.id,
             postComments
           );
+
+
+        // ----------------------------------------------
+        // ADD TO SLIDESHOW
+        // ----------------------------------------------
+
+        slideshowPosts.push({
+          imageUrl: slideshowImageUrl,
+          message: post.message || "",
+          date: formattedDate,
+          location: post.location || ""
+        });
 
 
         // ----------------------------------------------
@@ -1739,6 +1839,259 @@
 
 
     // --------------------------------------------------
+    // SLIDESHOW
+    // --------------------------------------------------
+
+    function openSlideshow() {
+
+      if (slideshowPosts.length === 0) {
+
+        alert(
+          "There are no updates to show yet."
+        );
+
+        return;
+      }
+
+      slideshowIndex = 0;
+
+      const modal =
+        document.getElementById(
+          "slideshow-modal"
+        );
+
+      modal.style.display = "flex";
+
+      document.body.style.overflow = "hidden";
+
+      showSlideshowSlide();
+
+      stopSlideshow();
+    }
+
+
+    function closeSlideshow() {
+
+      stopSlideshow();
+
+      const modal =
+        document.getElementById(
+          "slideshow-modal"
+        );
+
+      modal.style.display = "none";
+
+      document.body.style.overflow = "";
+    }
+
+
+    function showSlideshowSlide() {
+
+      if (
+        slideshowPosts.length === 0
+      ) {
+        return;
+      }
+
+      const post =
+        slideshowPosts[slideshowIndex];
+
+      const slide =
+        document.getElementById(
+          "slideshow-slide"
+        );
+
+      let imageHtml = "";
+
+      if (post.imageUrl) {
+
+        imageHtml = `
+          <img
+            src="${escapeHtml(post.imageUrl)}"
+            alt="Family update"
+          >
+        `;
+      }
+
+      let messageHtml = "";
+
+      if (post.message) {
+
+        messageHtml = `
+          <div class="slideshow-message">
+            ${escapeHtml(post.message)}
+          </div>
+        `;
+      }
+
+      let locationHtml = "";
+
+      if (post.location) {
+
+        locationHtml = `
+          <div>
+            📍 ${escapeHtml(post.location)}
+          </div>
+        `;
+      }
+
+      slide.innerHTML = `
+        ${imageHtml}
+
+        ${messageHtml}
+
+        <div class="slideshow-meta">
+          ${escapeHtml(post.date)}
+          ${locationHtml}
+        </div>
+
+        <div class="slideshow-counter">
+          ${slideshowIndex + 1} / ${slideshowPosts.length}
+        </div>
+      `;
+    }
+
+
+    function nextSlide() {
+
+      if (
+        slideshowPosts.length === 0
+      ) {
+        return;
+      }
+
+      slideshowIndex =
+        (slideshowIndex + 1) %
+        slideshowPosts.length;
+
+      showSlideshowSlide();
+    }
+
+
+    function previousSlide() {
+
+      if (
+        slideshowPosts.length === 0
+      ) {
+        return;
+      }
+
+      slideshowIndex =
+        (slideshowIndex - 1 +
+          slideshowPosts.length) %
+        slideshowPosts.length;
+
+      showSlideshowSlide();
+    }
+
+
+    function startSlideshow() {
+
+      if (
+        slideshowPosts.length <= 1
+      ) {
+        return;
+      }
+
+      stopSlideshow();
+
+      slideshowPlaying = true;
+
+      document.getElementById(
+        "slideshow-play-button"
+      ).textContent = "⏸️ Pause";
+
+      slideshowTimer =
+        setInterval(() => {
+
+          nextSlide();
+
+        }, 5000);
+    }
+
+
+    function stopSlideshow() {
+
+      if (slideshowTimer) {
+
+        clearInterval(
+          slideshowTimer
+        );
+
+        slideshowTimer = null;
+      }
+
+      slideshowPlaying = false;
+
+      const button =
+        document.getElementById(
+          "slideshow-play-button"
+        );
+
+      if (button) {
+
+        button.textContent =
+          "▶️ Play";
+      }
+    }
+
+
+    function toggleSlideshow() {
+
+      if (slideshowPlaying) {
+
+        stopSlideshow();
+
+      } else {
+
+        startSlideshow();
+
+      }
+    }
+
+
+    // --------------------------------------------------
+    // KEYBOARD CONTROLS
+    // --------------------------------------------------
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        const modal =
+          document.getElementById(
+            "slideshow-modal"
+          );
+
+        if (
+          modal.style.display !== "flex"
+        ) {
+          return;
+        }
+
+        if (event.key === "Escape") {
+
+          closeSlideshow();
+
+        } else if (event.key === "ArrowRight") {
+
+          nextSlide();
+
+        } else if (event.key === "ArrowLeft") {
+
+          previousSlide();
+
+        } else if (event.key === " ") {
+
+          event.preventDefault();
+
+          toggleSlideshow();
+        }
+      }
+    );
+
+
+    // --------------------------------------------------
     // CREATE POST
     // --------------------------------------------------
 
@@ -1759,7 +2112,6 @@
       const status =
         document.getElementById("postStatus");
 
-
       const file =
         photoInput.files[0];
 
@@ -1772,7 +2124,6 @@
       const expiry =
         expiryInput.value;
 
-
       if (!file && !message) {
 
         status.textContent =
@@ -1781,15 +2132,12 @@
         return;
       }
 
-
       status.textContent =
         "Sharing with everyone";
-
 
       const {
         data: userData
       } = await supabaseClient.auth.getUser();
-
 
       if (!userData?.user) {
 
@@ -1828,7 +2176,6 @@
 
       let photoPath = null;
 
-
       if (file) {
 
         const extension =
@@ -1839,14 +2186,12 @@
                 .toLowerCase()
             : "jpg";
 
-
         const fileName =
           Date.now() +
           "-" +
           crypto.randomUUID() +
           "." +
           extension;
-
 
         const {
           error: uploadError
@@ -1857,7 +2202,6 @@
             file
           );
 
-
         if (uploadError) {
 
           status.textContent =
@@ -1866,7 +2210,6 @@
 
           return;
         }
-
 
         photoPath =
           fileName;
@@ -1896,7 +2239,6 @@
             expiresAt
         });
 
-
       if (insertError) {
 
         if (photoPath) {
@@ -1905,7 +2247,6 @@
             .from("family-photos")
             .remove([photoPath]);
         }
-
 
         status.textContent =
           "Could not save the update: " +
@@ -1920,17 +2261,17 @@
       // ----------------------------------------------
 
       photoInput.value = "";
-      messageInput.value = "";
-      locationInput.value = "";
-      expiryInput.value = "forever";
 
+      messageInput.value = "";
+
+      locationInput.value = "";
+
+      expiryInput.value = "forever";
 
       status.textContent =
         "Shared";
 
-
       await loadPosts();
-
 
       setTimeout(() => {
 
@@ -1954,11 +2295,9 @@
           "Delete this update?\n\nThis cannot be undone."
         );
 
-
       if (!confirmed) {
         return;
       }
-
 
       if (photoPath) {
 
@@ -1967,7 +2306,6 @@
         } = await supabaseClient.storage
           .from("family-photos")
           .remove([photoPath]);
-
 
         if (photoError) {
 
@@ -1978,14 +2316,12 @@
         }
       }
 
-
       const {
         error
       } = await supabaseClient
         .from("posts")
         .delete()
         .eq("id", postId);
-
 
       if (error) {
 
@@ -1996,7 +2332,6 @@
 
         return;
       }
-
 
       await loadPosts();
     }
@@ -2042,7 +2377,6 @@
         data
       } = await supabaseClient.auth.getSession();
 
-
       if (data?.session) {
 
         document.getElementById("newPostCard")
@@ -2055,6 +2389,7 @@
           .classList.add("hidden");
 
         await cleanupExpiredPosts();
+
         await loadPosts();
       }
     }
