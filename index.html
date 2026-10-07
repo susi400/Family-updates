@@ -387,7 +387,6 @@
       display: none !important;
     }
 
-
     /* ==================================================
        FULL-SCREEN SLIDESHOW
        ================================================== */
@@ -413,12 +412,6 @@
       justify-content: center;
       overflow: hidden;
     }
-
-    /*
-      The slide itself fills the entire screen.
-      This means portrait and landscape photos both
-      get as large as possible without being cropped.
-    */
 
     #slideshow-slide {
       position: absolute;
@@ -454,10 +447,6 @@
 
       margin: 0;
     }
-
-    /*
-      Information sits over the bottom of the photo.
-    */
 
     .slideshow-message {
       position: absolute;
@@ -527,11 +516,6 @@
         0 2px 6px rgba(0, 0, 0, 0.8);
     }
 
-    /*
-      Close button and navigation controls.
-      They fade away when the slideshow is idle.
-    */
-
     .slideshow-close,
     .slideshow-controls {
       transition:
@@ -597,10 +581,6 @@
       min-width: 90px;
     }
 
-    /*
-      Hidden controls state.
-    */
-
     .slideshow-controls.controls-hidden,
     .slideshow-close.controls-hidden {
       opacity: 0;
@@ -608,10 +588,43 @@
       pointer-events: none;
     }
 
-
     /* ==================================================
-       MOBILE
+       NEW POST NOTIFICATION
        ================================================== */
+
+    .new-post-notice {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      z-index: 10000;
+
+      background: white;
+      color: var(--header);
+
+      padding: 14px 22px;
+
+      border-radius: 18px;
+
+      box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.18);
+
+      font-weight: 600;
+
+      opacity: 0;
+      visibility: hidden;
+
+      transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        visibility 0.3s ease;
+    }
+
+    .new-post-notice.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
 
     @media (max-width: 600px) {
 
@@ -671,9 +684,6 @@
         flex-direction: column;
         gap: 3px;
       }
-
-
-      /* MOBILE SLIDESHOW */
 
       #slideshow-slide {
         width: 100vw;
@@ -735,6 +745,12 @@
       .slideshow-controls .slideshow-play {
         min-width: 82px;
       }
+
+      .new-post-notice {
+        width: calc(100% - 30px);
+        text-align: center;
+        font-size: 14px;
+      }
     }
   </style>
 </head>
@@ -749,6 +765,7 @@
   <main>
 
     <div class="top-bar">
+
       <h2>Latest Updates</h2>
 
       <div class="button-row" style="margin-top: 0;">
@@ -769,10 +786,8 @@
         </button>
 
       </div>
+
     </div>
-
-
-    <!-- LOGIN -->
 
     <div
       id="loginCard"
@@ -818,9 +833,6 @@
 
     </div>
 
-
-    <!-- SLIDESHOW BUTTON -->
-
     <div
       class="button-row"
       style="margin-top: 0; margin-bottom: 18px;"
@@ -835,9 +847,6 @@
       </button>
 
     </div>
-
-
-    <!-- SLIDESHOW -->
 
     <div
       id="slideshow-modal"
@@ -892,9 +901,6 @@
       </div>
 
     </div>
-
-
-    <!-- NEW POST -->
 
     <div
       id="newPostCard"
@@ -974,9 +980,6 @@
 
     </div>
 
-
-    <!-- FEED -->
-
     <div id="feed">
 
       <div class="empty-state">
@@ -987,12 +990,16 @@
 
   </main>
 
+  <!-- NEW POST NOTICE -->
+
+  <div
+    id="newPostNotice"
+    class="new-post-notice"
+  >
+    New family update 🩷
+  </div>
 
   <script>
-
-    // --------------------------------------------------
-    // SUPABASE
-    // --------------------------------------------------
 
     const SUPABASE_URL =
       "https://efwhuwmnsikapsotlauy.supabase.co";
@@ -1006,11 +1013,6 @@
         SUPABASE_KEY
       );
 
-
-    // --------------------------------------------------
-    // REACTIONS
-    // --------------------------------------------------
-
     const REACTIONS = [
       "🥰",
       "😂",
@@ -1020,20 +1022,13 @@
       "🩵"
     ];
 
-
-    // --------------------------------------------------
-    // SLIDESHOW STATE
-    // --------------------------------------------------
-
     let slideshowPosts = [];
-
     let slideshowIndex = 0;
-
     let slideshowTimer = null;
-
     let slideshowPlaying = false;
-
     let slideshowControlsTimer = null;
+
+    let notificationTimeout = null;
 
 
     // --------------------------------------------------
@@ -1064,9 +1059,6 @@
         "controls-hidden"
       );
 
-
-      // Clear any previous hide timer
-
       if (slideshowControlsTimer) {
 
         clearTimeout(
@@ -1075,9 +1067,6 @@
 
         slideshowControlsTimer = null;
       }
-
-
-      // Hide again after 3 seconds
 
       slideshowControlsTimer =
         setTimeout(() => {
@@ -2118,10 +2107,6 @@
           null;
 
 
-        // ----------------------------------------------
-        // PRIVATE PHOTO
-        // ----------------------------------------------
-
         if (
           post.photo_url
         ) {
@@ -2159,10 +2144,6 @@
         }
 
 
-        // ----------------------------------------------
-        // MESSAGE
-        // ----------------------------------------------
-
         let messageHtml = "";
 
         if (
@@ -2178,10 +2159,6 @@
           `;
         }
 
-
-        // ----------------------------------------------
-        // DATE
-        // ----------------------------------------------
 
         const date =
           new Date(
@@ -2200,10 +2177,6 @@
           );
 
 
-        // ----------------------------------------------
-        // LOCATION
-        // ----------------------------------------------
-
         let locationHtml = "";
 
         if (
@@ -2219,10 +2192,6 @@
           `;
         }
 
-
-        // ----------------------------------------------
-        // EXPIRY
-        // ----------------------------------------------
 
         let expiryHtml = "";
 
@@ -2251,10 +2220,6 @@
         }
 
 
-        // ----------------------------------------------
-        // REACTIONS
-        // ----------------------------------------------
-
         const postReactionData =
           reactionData[
             post.id
@@ -2271,10 +2236,6 @@
           );
 
 
-        // ----------------------------------------------
-        // COMMENTS
-        // ----------------------------------------------
-
         const postComments =
           commentData[
             post.id
@@ -2286,10 +2247,6 @@
             postComments
           );
 
-
-        // ----------------------------------------------
-        // ADD TO SLIDESHOW
-        // ----------------------------------------------
 
         slideshowPosts.push({
           imageUrl:
@@ -2305,10 +2262,6 @@
             post.location || ""
         });
 
-
-        // ----------------------------------------------
-        // POST
-        // ----------------------------------------------
 
         const postElement =
           document.createElement(
@@ -2361,9 +2314,9 @@
     }
 
 
-    // ==================================================
+    // --------------------------------------------------
     // SLIDESHOW
-    // ==================================================
+    // --------------------------------------------------
 
     function openSlideshow() {
 
@@ -2394,8 +2347,6 @@
       showSlideshowSlide();
 
       stopSlideshow();
-
-      // Show controls when opening
 
       showSlideshowControls();
     }
@@ -2577,11 +2528,6 @@
         "slideshow-play-button"
       ).textContent = "Pause";
 
-      /*
-        Show controls briefly when playback starts.
-        They then disappear automatically.
-      */
-
       showSlideshowControls();
 
       slideshowTimer =
@@ -2638,9 +2584,9 @@
     }
 
 
-    // ==================================================
-    // SHOW CONTROLS WHEN USER INTERACTS WITH SLIDESHOW
-    // ==================================================
+    // --------------------------------------------------
+    // SHOW SLIDESHOW CONTROLS WHEN USER INTERACTS
+    // --------------------------------------------------
 
     const slideshowContent =
       document.getElementById(
@@ -2674,12 +2620,6 @@
     slideshowContent.addEventListener(
       "click",
       event => {
-
-        /*
-          Don't interfere with buttons.
-          Clicking an actual button already
-          performs its normal action.
-        */
 
         if (
           event.target.closest(
@@ -2825,10 +2765,6 @@
       }
 
 
-      // ----------------------------------------------
-      // EXPIRATION
-      // ----------------------------------------------
-
       let expiresAt =
         null;
 
@@ -2860,10 +2796,6 @@
           ).toISOString();
       }
 
-
-      // ----------------------------------------------
-      // UPLOAD PHOTO
-      // ----------------------------------------------
 
       let photoPath =
         null;
@@ -2913,10 +2845,6 @@
       }
 
 
-      // ----------------------------------------------
-      // INSERT POST
-      // ----------------------------------------------
-
       const {
         error: insertError
       } = await supabaseClient
@@ -2962,10 +2890,6 @@
         return;
       }
 
-
-      // ----------------------------------------------
-      // RESET
-      // ----------------------------------------------
 
       photoInput.value =
         "";
@@ -3127,6 +3051,104 @@
           "\\r"
         );
     }
+
+
+    // --------------------------------------------------
+    // SHOW NEW POST NOTICE
+    // --------------------------------------------------
+
+    function showNewPostNotice() {
+
+      const notice =
+        document.getElementById(
+          "newPostNotice"
+        );
+
+      if (!notice) {
+        return;
+      }
+
+      notice.classList.add(
+        "show"
+      );
+
+      if (
+        notificationTimeout
+      ) {
+
+        clearTimeout(
+          notificationTimeout
+        );
+      }
+
+      notificationTimeout =
+        setTimeout(() => {
+
+          notice.classList.remove(
+            "show"
+          );
+
+        }, 4000);
+    }
+
+
+    // --------------------------------------------------
+    // REAL-TIME NEW POST DETECTION
+    // --------------------------------------------------
+
+    supabaseClient
+      .channel("new-family-posts")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "posts"
+        },
+        async (payload) => {
+
+          const {
+            data: userData
+          } = await supabaseClient
+            .auth
+            .getUser();
+
+          if (
+            !userData?.user
+          ) {
+            return;
+          }
+
+          /*
+           * If the newly created post belongs to
+           * the currently logged-in user, don't
+           * show a notification because the user
+           * already knows they just posted it.
+           */
+
+          if (
+            payload?.new?.created_by &&
+            payload.new.created_by ===
+              userData.user.id
+          ) {
+
+            return;
+          }
+
+          await loadPosts();
+
+          showNewPostNotice();
+
+          /*
+           * We are NOT requesting browser notification
+           * permission yet.
+           *
+           * That will be added in the next step.
+           */
+
+        }
+      )
+      .subscribe();
 
 
     // --------------------------------------------------
