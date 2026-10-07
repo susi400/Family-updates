@@ -208,4 +208,1042 @@
       border-radius: 28px;
       padding: 24px;
       margin-bottom: 22px;
-      box-shadow: 0 7
+      box-shadow: 0 7px 22px rgba(0, 0, 0, 0.07);
+      overflow: hidden;
+    }
+
+    .post img {
+      display: block;
+      width: 100%;
+      max-height: 650px;
+      object-fit: cover;
+      border-radius: 22px;
+      margin-bottom: 20px;
+    }
+
+    .post-message {
+      font-size: 28px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin-bottom: 16px;
+    }
+
+    .post-meta {
+      color: var(--soft-text);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .location {
+      margin-top: 5px;
+    }
+
+    .post-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--soft-text);
+      font-size: 18px;
+      padding: 35px 20px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 26px 18px 24px;
+      }
+
+      header h1 {
+        font-size: 30px;
+      }
+
+      header p {
+        font-size: 16px;
+      }
+
+      main {
+        width: min(100% - 20px, 900px);
+        margin-top: 16px;
+      }
+
+      .card,
+      .post {
+        padding: 20px;
+        border-radius: 24px;
+      }
+
+      .top-bar {
+        align-items: flex-start;
+      }
+
+      .top-bar h2 {
+        font-size: 25px;
+      }
+
+      .post-message {
+        font-size: 28px;
+      }
+
+      .post-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Sharing our happy moments 🩷</h1>
+    <p>Use this to share updated pictures and your favourite stories</p>
+  </header>
+
+  <main>
+
+    <div class="top-bar">
+      <h2>Latest Updates</h2>
+
+      <div class="button-row" style="margin-top: 0;">
+        <button id="loginToggleButton" onclick="toggleLogin()">
+          Log in
+        </button>
+
+        <button
+          id="logoutButton"
+          class="secondary-button hidden"
+          onclick="logout()"
+        >
+          Log out
+        </button>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+
+    <div id="loginCard" class="card login-card">
+
+      <h3>Log in 🩷</h3>
+
+      <label for="email">Email</label>
+
+      <input
+        id="email"
+        type="email"
+        autocomplete="email"
+        placeholder="Your email"
+      >
+
+      <label for="password">Password</label>
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Your password"
+      >
+
+      <div class="button-row">
+        <button onclick="login()">
+          Log in
+        </button>
+      </div>
+
+      <div id="loginStatus" class="status"></div>
+
+    </div>
+
+
+    <!-- NEW POST -->
+
+    <div id="newPostCard" class="card new-post-card">
+
+      <h3>Share something with the family 🫶</h3>
+
+      <label for="photo">
+        Picture
+      </label>
+
+      <input
+        id="photo"
+        type="file"
+        accept="image/*"
+      >
+
+      <label for="message">
+        Message
+      </label>
+
+      <textarea
+        id="message"
+        placeholder="Share an update... 😊"
+      ></textarea>
+
+      <label for="location">
+        Location <span style="font-weight:400;">(optional)</span>
+      </label>
+
+      <input
+        id="location"
+        type="text"
+        placeholder="e.g. Vienna 🇦🇹"
+      >
+
+      <label for="expiry">
+        How long should this update stay?
+      </label>
+
+      <select id="expiry">
+        <option value="forever">
+          Keep forever
+        </option>
+
+        <option value="24h">
+          Show for 24 hours
+        </option>
+
+        <option value="1week">
+          Show for 1 week
+        </option>
+      </select>
+
+      <div class="expiry-help">
+        Expired updates will automatically disappear from the family feed.
+      </div>
+
+      <div class="button-row">
+        <button onclick="createPost()">
+          Share with the family 🫶
+        </button>
+      </div>
+
+      <div id="postStatus" class="status"></div>
+
+    </div>
+
+
+    <!-- FEED -->
+
+    <div id="feed">
+
+      <div class="empty-state">
+        Please log in to see the family updates 🩷
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    // --------------------------------------------------
+    // SUPABASE
+    // --------------------------------------------------
+
+    const SUPABASE_URL =
+      "https://efwhuwmnsikapsotlauy.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_71zpw_6tibul5KHmbaBE6A_BYGVb5FG";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    // --------------------------------------------------
+    // LOGIN UI
+    // --------------------------------------------------
+
+    function toggleLogin() {
+
+      const card =
+        document.getElementById("loginCard");
+
+      if (card.style.display === "block") {
+
+        card.style.display = "none";
+
+      } else {
+
+        card.style.display = "block";
+      }
+    }
+
+
+    // --------------------------------------------------
+    // LOGIN
+    // --------------------------------------------------
+
+    async function login() {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const status =
+        document.getElementById("loginStatus");
+
+      status.textContent =
+        "Logging in...";
+
+      const { error } =
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+      if (error) {
+
+        status.textContent =
+          "Login failed: " + error.message;
+
+        return;
+      }
+
+      status.textContent = "";
+
+      document.getElementById("loginCard").style.display =
+        "none";
+    }
+
+
+    // --------------------------------------------------
+    // LOGOUT
+    // --------------------------------------------------
+
+    async function logout() {
+
+      await supabaseClient.auth.signOut();
+
+      document.getElementById("newPostCard").style.display =
+        "none";
+
+      document.getElementById("logoutButton")
+        .classList.add("hidden");
+
+      document.getElementById("loginToggleButton")
+        .classList.remove("hidden");
+
+      document.getElementById("feed").innerHTML = `
+        <div class="empty-state">
+          Please log in to see the family updates 🩷
+        </div>
+      `;
+    }
+
+
+    // --------------------------------------------------
+    // AUTH STATE
+    // --------------------------------------------------
+
+    supabaseClient.auth.onAuthStateChange(
+      async (event, session) => {
+
+        if (session) {
+
+          document.getElementById("newPostCard")
+            .style.display = "block";
+
+          document.getElementById("logoutButton")
+            .classList.remove("hidden");
+
+          document.getElementById("loginToggleButton")
+            .classList.add("hidden");
+
+          await cleanupExpiredPosts();
+          await loadPosts();
+
+        } else {
+
+          document.getElementById("newPostCard")
+            .style.display = "none";
+
+          document.getElementById("logoutButton")
+            .classList.add("hidden");
+
+          document.getElementById("loginToggleButton")
+            .classList.remove("hidden");
+        }
+
+      }
+    );
+
+
+    // --------------------------------------------------
+    // CLEAN UP EXPIRED POSTS
+    // --------------------------------------------------
+
+    async function cleanupExpiredPosts() {
+
+      const now =
+        new Date().toISOString();
+
+      const {
+        data: expiredPosts,
+        error
+      } = await supabaseClient
+        .from("posts")
+        .select("id, photo_url")
+        .not("expires_at", "is", null)
+        .lte("expires_at", now);
+
+      if (error) {
+
+        console.error(
+          "Could not find expired posts:",
+          error
+        );
+
+        return;
+      }
+
+      if (!expiredPosts || expiredPosts.length === 0) {
+        return;
+      }
+
+
+      for (const post of expiredPosts) {
+
+        // Delete associated photo first
+        if (post.photo_url) {
+
+          const {
+            error: photoError
+          } = await supabaseClient.storage
+            .from("family-photos")
+            .remove([post.photo_url]);
+
+          if (photoError) {
+
+            console.error(
+              "Could not delete expired photo:",
+              photoError
+            );
+          }
+        }
+
+
+        // Delete database record
+        const {
+          error: deleteError
+        } = await supabaseClient
+          .from("posts")
+          .delete()
+          .eq("id", post.id);
+
+        if (deleteError) {
+
+          console.error(
+            "Could not delete expired post:",
+            deleteError
+          );
+        }
+      }
+    }
+
+
+    // --------------------------------------------------
+    // LOAD POSTS
+    // --------------------------------------------------
+
+    async function loadPosts() {
+
+      const feed =
+        document.getElementById("feed");
+
+      feed.innerHTML = `
+        <div class="empty-state">
+          Loading updates... 🩷
+        </div>
+      `;
+
+
+      const now =
+        new Date().toISOString();
+
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("posts")
+        .select("*")
+        .or(
+          `expires_at.is.null,expires_at.gt.${now}`
+        )
+        .order("created_at", {
+          ascending: false
+        });
+
+
+      if (error) {
+
+        feed.innerHTML = `
+          <div class="empty-state">
+            Could not load updates.<br><br>
+            ${escapeHtml(error.message)}
+          </div>
+        `;
+
+        return;
+      }
+
+
+      if (!data || data.length === 0) {
+
+        feed.innerHTML = `
+          <div class="empty-state">
+            No updates yet 🩷
+          </div>
+        `;
+
+        return;
+      }
+
+
+      feed.innerHTML = "";
+
+
+      for (const post of data) {
+
+        let imageHtml = "";
+
+
+        // ----------------------------------------------
+        // PRIVATE PHOTO
+        // ----------------------------------------------
+
+        if (post.photo_url) {
+
+          const {
+            data: signedData,
+            error: signedError
+          } = await supabaseClient.storage
+            .from("family-photos")
+            .createSignedUrl(
+              post.photo_url,
+              60 * 60
+            );
+
+
+          if (
+            !signedError &&
+            signedData?.signedUrl
+          ) {
+
+            imageHtml = `
+              <img
+                src="${signedData.signedUrl}"
+                alt="Family update"
+              >
+            `;
+          }
+        }
+
+
+        // ----------------------------------------------
+        // MESSAGE
+        // ----------------------------------------------
+
+        let messageHtml = "";
+
+        if (post.message) {
+
+          messageHtml = `
+            <div class="post-message">
+              ${escapeHtml(post.message)}
+            </div>
+          `;
+        }
+
+
+        // ----------------------------------------------
+        // DATE
+        // ----------------------------------------------
+
+        const date =
+          new Date(post.created_at);
+
+        const formattedDate =
+          date.toLocaleString(
+            undefined,
+            {
+              dateStyle: "medium",
+              timeStyle: "short"
+            }
+          );
+
+
+        // ----------------------------------------------
+        // LOCATION
+        // ----------------------------------------------
+
+        let locationHtml = "";
+
+        if (post.location) {
+
+          locationHtml = `
+            <div class="location">
+              📍 ${escapeHtml(post.location)}
+            </div>
+          `;
+        }
+
+
+        // ----------------------------------------------
+        // EXPIRY
+        // ----------------------------------------------
+
+        let expiryHtml = "";
+
+        if (post.expires_at) {
+
+          const expiryDate =
+            new Date(post.expires_at);
+
+          expiryHtml = `
+            <div>
+              ⏰ Until ${expiryDate.toLocaleString(
+                undefined,
+                {
+                  dateStyle: "medium",
+                  timeStyle: "short"
+                }
+              )}
+            </div>
+          `;
+        }
+
+
+        // ----------------------------------------------
+        // POST
+        // ----------------------------------------------
+
+        const postElement =
+          document.createElement("div");
+
+        postElement.className = "post";
+
+        postElement.innerHTML = `
+          ${imageHtml}
+
+          ${messageHtml}
+
+          <div class="post-meta">
+            ${formattedDate}
+            ${locationHtml}
+            ${expiryHtml}
+          </div>
+
+          <div class="post-footer">
+
+            <div></div>
+
+            <button
+              class="delete-button"
+              onclick="deletePost('${post.id}', ${post.photo_url ? `'${escapeJs(post.photo_url)}'` : "null"})"
+            >
+              🗑️ Delete
+            </button>
+
+          </div>
+        `;
+
+        feed.appendChild(postElement);
+      }
+    }
+
+
+    // --------------------------------------------------
+    // CREATE POST
+    // --------------------------------------------------
+
+    async function createPost() {
+
+      const photoInput =
+        document.getElementById("photo");
+
+      const messageInput =
+        document.getElementById("message");
+
+      const locationInput =
+        document.getElementById("location");
+
+      const expiryInput =
+        document.getElementById("expiry");
+
+      const status =
+        document.getElementById("postStatus");
+
+
+      const file =
+        photoInput.files[0];
+
+      const message =
+        messageInput.value.trim();
+
+      const location =
+        locationInput.value.trim();
+
+      const expiry =
+        expiryInput.value;
+
+
+      if (!file && !message) {
+
+        status.textContent =
+          "Please add a picture or a message.";
+
+        return;
+      }
+
+
+      status.textContent =
+        "Sharing with the family... 🫶";
+
+
+      // ----------------------------------------------
+      // CURRENT USER
+      // ----------------------------------------------
+
+      const {
+        data: userData
+      } = await supabaseClient.auth.getUser();
+
+
+      if (!userData?.user) {
+
+        status.textContent =
+          "Please log in again.";
+
+        return;
+      }
+
+
+      // ----------------------------------------------
+      // EXPIRATION
+      // ----------------------------------------------
+
+      let expiresAt = null;
+
+      if (expiry === "24h") {
+
+        expiresAt =
+          new Date(
+            Date.now() + 24 * 60 * 60 * 1000
+          ).toISOString();
+
+      } else if (expiry === "1week") {
+
+        expiresAt =
+          new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString();
+      }
+
+
+      // ----------------------------------------------
+      // UPLOAD PHOTO
+      // ----------------------------------------------
+
+      let photoPath = null;
+
+
+      if (file) {
+
+        const extension =
+          file.name.includes(".")
+            ? file.name
+                .split(".")
+                .pop()
+                .toLowerCase()
+            : "jpg";
+
+
+        const fileName =
+          Date.now() +
+          "-" +
+          crypto.randomUUID() +
+          "." +
+          extension;
+
+
+        const {
+          error: uploadError
+        } = await supabaseClient.storage
+          .from("family-photos")
+          .upload(
+            fileName,
+            file
+          );
+
+
+        if (uploadError) {
+
+          status.textContent =
+            "Photo upload failed: " +
+            uploadError.message;
+
+          return;
+        }
+
+
+        photoPath =
+          fileName;
+      }
+
+
+      // ----------------------------------------------
+      // INSERT POST
+      // ----------------------------------------------
+
+      const {
+        error: insertError
+      } = await supabaseClient
+        .from("posts")
+        .insert({
+
+          message:
+            message || null,
+
+          photo_url:
+            photoPath,
+
+          location:
+            location || null,
+
+          expires_at:
+            expiresAt
+        });
+
+
+      if (insertError) {
+
+        // If database insertion fails after uploading
+        // the photo, clean up the uploaded photo.
+
+        if (photoPath) {
+
+          await supabaseClient.storage
+            .from("family-photos")
+            .remove([photoPath]);
+        }
+
+
+        status.textContent =
+          "Could not save the update: " +
+          insertError.message;
+
+        return;
+      }
+
+
+      // ----------------------------------------------
+      // RESET
+      // ----------------------------------------------
+
+      photoInput.value = "";
+      messageInput.value = "";
+      locationInput.value = "";
+      expiryInput.value = "forever";
+
+
+      status.textContent =
+        "Shared with the family 🩷";
+
+
+      await loadPosts();
+
+
+      setTimeout(() => {
+
+        status.textContent = "";
+
+      }, 3000);
+    }
+
+
+    // --------------------------------------------------
+    // DELETE POST
+    // --------------------------------------------------
+
+    async function deletePost(
+      postId,
+      photoPath
+    ) {
+
+      const confirmed =
+        confirm(
+          "Delete this family update?\n\nThis cannot be undone."
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      // ----------------------------------------------
+      // DELETE PHOTO
+      // ----------------------------------------------
+
+      if (photoPath) {
+
+        const {
+          error: photoError
+        } = await supabaseClient.storage
+          .from("family-photos")
+          .remove([photoPath]);
+
+
+        if (photoError) {
+
+          console.error(
+            "Photo deletion failed:",
+            photoError
+          );
+        }
+      }
+
+
+      // ----------------------------------------------
+      // DELETE POST
+      // ----------------------------------------------
+
+      const {
+        error
+      } = await supabaseClient
+        .from("posts")
+        .delete()
+        .eq("id", postId);
+
+
+      if (error) {
+
+        alert(
+          "Could not delete the update: " +
+          error.message
+        );
+
+        return;
+      }
+
+
+      await loadPosts();
+    }
+
+
+    // --------------------------------------------------
+    // ESCAPE HTML
+    // --------------------------------------------------
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+
+    // --------------------------------------------------
+    // ESCAPE JAVASCRIPT STRINGS
+    // --------------------------------------------------
+
+    function escapeJs(value) {
+
+      return String(value)
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\n/g, "\\n")
+        .replace(/\r/g, "\\r");
+    }
+
+
+    // --------------------------------------------------
+    // INITIAL SESSION CHECK
+    // --------------------------------------------------
+
+    async function checkSession() {
+
+      const {
+        data
+      } = await supabaseClient.auth.getSession();
+
+
+      if (data?.session) {
+
+        document.getElementById("newPostCard")
+          .style.display = "block";
+
+        document.getElementById("logoutButton")
+          .classList.remove("hidden");
+
+        document.getElementById("loginToggleButton")
+          .classList.add("hidden");
+
+        await cleanupExpiredPosts();
+        await loadPosts();
+      }
+    }
+
+
+    checkSession();
+
+
+    // --------------------------------------------------
+    // SERVICE WORKER / PWA
+    // --------------------------------------------------
+
+    if ("serviceWorker" in navigator) {
+
+      window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+          .register("./service-worker.js")
+
+          .then(() => {
+
+            console.log(
+              "Service worker registered"
+            );
+
+          })
+
+          .catch(error => {
+
+            console.error(
+              "Service worker registration failed:",
+              error
+            );
+
+          });
+
+      });
+    }
+
+  </script>
+
+</body>
+</html>
