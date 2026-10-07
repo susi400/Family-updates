@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Our Daily Updates 😊</title>
+  <title>Our Daily Updates</title>
 
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#930527">
@@ -450,8 +450,8 @@
 <body>
 
   <header>
-    <h1>Sharing our happy moments 🩷</h1>
-    <p>Use this to share updated pictures and your favourite stories</p>
+    <h1>Sharing happy moments 🩷</h1>
+    <p>Use this to share pictures and your favourite stories</p>
   </header>
 
   <main>
@@ -510,10 +510,17 @@
 
 
     <!-- NEW POST -->
+    <button
+  id="slideshow-button"
+  class="secondary-button"
+  onclick="openSlideshow()"
+>
+  🖼️ Slideshow
+</button>
 
     <div id="newPostCard" class="card new-post-card">
 
-      <h3>Share something with the family 🫶</h3>
+      <h3>Share a message</h3>
 
       <label for="photo">
         Picture
@@ -531,7 +538,7 @@
 
       <textarea
         id="message"
-        placeholder="Share an update... 😊"
+        placeholder="Share an update..."
       ></textarea>
 
       <label for="location">
@@ -568,7 +575,7 @@
 
       <div class="button-row">
         <button onclick="createPost()">
-          Share with the family 🫶
+          Share
         </button>
       </div>
 
@@ -582,7 +589,7 @@
     <div id="feed">
 
       <div class="empty-state">
-        Please log in to see the family updates 🩷
+        Please log in to see messages 🩷
       </div>
 
     </div>
@@ -701,7 +708,7 @@
 
       document.getElementById("feed").innerHTML = `
         <div class="empty-state">
-          Please log in to see the family updates 🩷
+          Please log in to see messages 🩷
         </div>
       `;
     }
@@ -1700,7 +1707,7 @@
 
 
       status.textContent =
-        "Sharing with the family... 🫶";
+        "Sharing with everyone";
 
 
       const {
@@ -1843,7 +1850,7 @@
 
 
       status.textContent =
-        "Shared with the family 🩷";
+        "Shared";
 
 
       await loadPosts();
@@ -1868,7 +1875,7 @@
 
       const confirmed =
         confirm(
-          "Delete this family update?\n\nThis cannot be undone."
+          "Delete this update?\n\nThis cannot be undone."
         );
 
 
