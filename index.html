@@ -387,103 +387,231 @@
       display: none !important;
     }
 
-    /* SLIDESHOW */
+
+    /* ==================================================
+       FULL-SCREEN SLIDESHOW
+       ================================================== */
 
     .slideshow-modal {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: rgba(0, 0, 0, 0.94);
+      background: #000000;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 0;
+      overflow: hidden;
     }
 
     .slideshow-content {
-      width: 100%;
-      max-width: 1100px;
-      max-height: 95vh;
+      width: 100vw;
+      height: 100vh;
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /*
+      The slide itself fills the entire screen.
+      This means portrait and landscape photos both
+      get as large as possible without being cropped.
+    */
+
+    #slideshow-slide {
+      position: absolute;
+      inset: 0;
+
+      width: 100vw;
+      height: 100vh;
+
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-    }
 
-    .slideshow-close {
-      position: absolute;
-      top: -5px;
-      right: 0;
-      z-index: 2;
-      background: rgba(255, 255, 255, 0.95);
-      color: #930527;
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      padding: 0;
-      font-size: 20px;
-      box-shadow: none;
-    }
-
-    #slideshow-slide {
-      width: 100%;
-      max-height: 82vh;
-      overflow: auto;
+      overflow: hidden;
       text-align: center;
       color: white;
-      padding: 10px 50px;
+
+      padding: 0;
     }
 
     #slideshow-slide img {
       display: block;
-      max-width: 100%;
-      max-height: 62vh;
+
+      width: auto;
+      height: auto;
+
+      max-width: 100vw;
+      max-height: 100vh;
+
       object-fit: contain;
-      border-radius: 14px;
-      margin: 0 auto 18px;
+
+      border-radius: 0;
+
+      margin: 0;
     }
 
+    /*
+      Information sits over the bottom of the photo.
+    */
+
     .slideshow-message {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 80px;
+
       color: white;
+
       font-size: 30px;
-      line-height: 1.45;
+      line-height: 1.4;
+
       white-space: pre-wrap;
       word-break: break-word;
-      margin: 15px auto;
-      max-width: 850px;
+
+      max-width: 1000px;
+      margin: 0 auto;
+
+      padding: 70px 40px 30px;
+
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0.75)
+      );
+
+      text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.7);
+
+      z-index: 2;
     }
 
     .slideshow-meta {
-      color: rgba(255, 255, 255, 0.75);
+      position: absolute;
+
+      left: 0;
+      right: 0;
+      bottom: 52px;
+
+      color: rgba(255, 255, 255, 0.9);
+
       font-size: 14px;
       line-height: 1.6;
-      margin-top: 10px;
+
+      padding: 0 30px;
+
+      text-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.8);
+
+      z-index: 3;
     }
 
     .slideshow-counter {
+      position: absolute;
+
+      bottom: 22px;
+      left: 0;
+      right: 0;
+
       color: rgba(255, 255, 255, 0.65);
+
       font-size: 13px;
-      margin-top: 8px;
+
+      z-index: 3;
+
+      text-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    /*
+      Close button and navigation controls.
+      They fade away when the slideshow is idle.
+    */
+
+    .slideshow-close,
+    .slideshow-controls {
+      transition:
+        opacity 0.35s ease,
+        visibility 0.35s ease;
+    }
+
+    .slideshow-close {
+      position: absolute;
+
+      top: 20px;
+      right: 20px;
+
+      z-index: 10;
+
+      background: rgba(255, 255, 255, 0.92);
+      color: #930527;
+
+      border-radius: 50%;
+
+      width: 46px;
+      height: 46px;
+
+      padding: 0;
+
+      font-size: 20px;
+
+      box-shadow: none;
     }
 
     .slideshow-controls {
+      position: absolute;
+
+      bottom: 18px;
+      left: 0;
+      right: 0;
+
       display: flex;
+
       gap: 12px;
-      margin-top: 18px;
+
       align-items: center;
       justify-content: center;
+
+      z-index: 10;
     }
 
     .slideshow-controls button {
       min-width: 52px;
       min-height: 46px;
+
       padding: 10px 15px;
+
+      background: rgba(255, 255, 255, 0.92);
+      color: #550317;
+
+      box-shadow: none;
+
+      backdrop-filter: blur(6px);
     }
 
     .slideshow-controls .slideshow-play {
-      min-width: 100px;
+      min-width: 90px;
     }
+
+    /*
+      Hidden controls state.
+    */
+
+    .slideshow-controls.controls-hidden,
+    .slideshow-close.controls-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+
+    /* ==================================================
+       MOBILE
+       ================================================== */
 
     @media (max-width: 600px) {
 
@@ -544,21 +672,68 @@
         gap: 3px;
       }
 
+
+      /* MOBILE SLIDESHOW */
+
       #slideshow-slide {
-        padding: 10px 15px;
+        width: 100vw;
+        height: 100vh;
       }
 
       #slideshow-slide img {
-        max-height: 55vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
       }
 
       .slideshow-message {
-        font-size: 23px;
+        bottom: 82px;
+
+        font-size: 22px;
+
+        padding:
+          60px
+          20px
+          25px;
+      }
+
+      .slideshow-meta {
+        bottom: 53px;
+
+        font-size: 12px;
+
+        padding:
+          0
+          15px;
+      }
+
+      .slideshow-counter {
+        bottom: 25px;
       }
 
       .slideshow-close {
-        top: -5px;
-        right: 0;
+        top: 14px;
+        right: 14px;
+
+        width: 42px;
+        height: 42px;
+      }
+
+      .slideshow-controls {
+        bottom: 10px;
+
+        gap: 8px;
+      }
+
+      .slideshow-controls button {
+        min-width: 48px;
+        min-height: 42px;
+
+        padding: 8px 12px;
+      }
+
+      .slideshow-controls .slideshow-play {
+        min-width: 82px;
       }
     }
   </style>
@@ -578,7 +753,10 @@
 
       <div class="button-row" style="margin-top: 0;">
 
-        <button id="loginToggleButton" onclick="toggleLogin()">
+        <button
+          id="loginToggleButton"
+          onclick="toggleLogin()"
+        >
           Log in
         </button>
 
@@ -596,7 +774,10 @@
 
     <!-- LOGIN -->
 
-    <div id="loginCard" class="card login-card">
+    <div
+      id="loginCard"
+      class="card login-card"
+    >
 
       <h3>Log in 🩷</h3>
 
@@ -623,19 +804,27 @@
       >
 
       <div class="button-row">
+
         <button onclick="login()">
           Log in
         </button>
+
       </div>
 
-      <div id="loginStatus" class="status"></div>
+      <div
+        id="loginStatus"
+        class="status"
+      ></div>
 
     </div>
 
 
     <!-- SLIDESHOW BUTTON -->
 
-    <div class="button-row" style="margin-top: 0; margin-bottom: 18px;">
+    <div
+      class="button-row"
+      style="margin-top: 0; margin-bottom: 18px;"
+    >
 
       <button
         id="slideshow-button"
@@ -655,9 +844,13 @@
       class="slideshow-modal"
     >
 
-      <div class="slideshow-content">
+      <div
+        class="slideshow-content"
+        id="slideshow-content"
+      >
 
         <button
+          id="slideshow-close"
           class="slideshow-close"
           onclick="closeSlideshow()"
           aria-label="Close slideshow"
@@ -667,7 +860,10 @@
 
         <div id="slideshow-slide"></div>
 
-        <div class="slideshow-controls">
+        <div
+          id="slideshow-controls"
+          class="slideshow-controls"
+        >
 
           <button
             onclick="previousSlide()"
@@ -681,7 +877,7 @@
             class="slideshow-play"
             onclick="toggleSlideshow()"
           >
-            ▶️ Play
+            Play
           </button>
 
           <button
@@ -771,7 +967,10 @@
 
       </div>
 
-      <div id="postStatus" class="status"></div>
+      <div
+        id="postStatus"
+        class="status"
+      ></div>
 
     </div>
 
@@ -834,6 +1033,107 @@
 
     let slideshowPlaying = false;
 
+    let slideshowControlsTimer = null;
+
+
+    // --------------------------------------------------
+    // SLIDESHOW CONTROL VISIBILITY
+    // --------------------------------------------------
+
+    function showSlideshowControls() {
+
+      const controls =
+        document.getElementById(
+          "slideshow-controls"
+        );
+
+      const closeButton =
+        document.getElementById(
+          "slideshow-close"
+        );
+
+      if (!controls || !closeButton) {
+        return;
+      }
+
+      controls.classList.remove(
+        "controls-hidden"
+      );
+
+      closeButton.classList.remove(
+        "controls-hidden"
+      );
+
+
+      // Clear any previous hide timer
+
+      if (slideshowControlsTimer) {
+
+        clearTimeout(
+          slideshowControlsTimer
+        );
+
+        slideshowControlsTimer = null;
+      }
+
+
+      // Hide again after 3 seconds
+
+      slideshowControlsTimer =
+        setTimeout(() => {
+
+          hideSlideshowControls();
+
+        }, 3000);
+    }
+
+
+    function hideSlideshowControls() {
+
+      const controls =
+        document.getElementById(
+          "slideshow-controls"
+        );
+
+      const closeButton =
+        document.getElementById(
+          "slideshow-close"
+        );
+
+      if (!controls || !closeButton) {
+        return;
+      }
+
+      controls.classList.add(
+        "controls-hidden"
+      );
+
+      closeButton.classList.add(
+        "controls-hidden"
+      );
+    }
+
+
+    function resetSlideshowControlsTimer() {
+
+      const modal =
+        document.getElementById(
+          "slideshow-modal"
+        );
+
+      if (!modal) {
+        return;
+      }
+
+      if (
+        modal.style.display !== "flex"
+      ) {
+        return;
+      }
+
+      showSlideshowControls();
+    }
+
 
     // --------------------------------------------------
     // LOGIN UI
@@ -842,9 +1142,13 @@
     function toggleLogin() {
 
       const card =
-        document.getElementById("loginCard");
+        document.getElementById(
+          "loginCard"
+        );
 
-      if (card.style.display === "block") {
+      if (
+        card.style.display === "block"
+      ) {
 
         card.style.display = "none";
 
@@ -863,35 +1167,45 @@
     async function login() {
 
       const email =
-        document.getElementById("email").value.trim();
+        document
+          .getElementById("email")
+          .value
+          .trim();
 
       const password =
-        document.getElementById("password").value;
+        document
+          .getElementById("password")
+          .value;
 
       const status =
-        document.getElementById("loginStatus");
+        document.getElementById(
+          "loginStatus"
+        );
 
       status.textContent =
         "Logging in...";
 
       const { error } =
-        await supabaseClient.auth.signInWithPassword({
-          email,
-          password
-        });
+        await supabaseClient.auth
+          .signInWithPassword({
+            email,
+            password
+          });
 
       if (error) {
 
         status.textContent =
-          "Login failed: " + error.message;
+          "Login failed: " +
+          error.message;
 
         return;
       }
 
       status.textContent = "";
 
-      document.getElementById("loginCard").style.display =
-        "none";
+      document.getElementById(
+        "loginCard"
+      ).style.display = "none";
     }
 
 
@@ -905,16 +1219,21 @@
 
       await supabaseClient.auth.signOut();
 
-      document.getElementById("newPostCard").style.display =
-        "none";
+      document.getElementById(
+        "newPostCard"
+      ).style.display = "none";
 
-      document.getElementById("logoutButton")
-        .classList.add("hidden");
+      document.getElementById(
+        "logoutButton"
+      ).classList.add("hidden");
 
-      document.getElementById("loginToggleButton")
-        .classList.remove("hidden");
+      document.getElementById(
+        "loginToggleButton"
+      ).classList.remove("hidden");
 
-      document.getElementById("feed").innerHTML = `
+      document.getElementById(
+        "feed"
+      ).innerHTML = `
         <div class="empty-state">
           Please log in to see messages 🩷
         </div>
@@ -931,14 +1250,17 @@
 
         if (session) {
 
-          document.getElementById("newPostCard")
-            .style.display = "block";
+          document.getElementById(
+            "newPostCard"
+          ).style.display = "block";
 
-          document.getElementById("logoutButton")
-            .classList.remove("hidden");
+          document.getElementById(
+            "logoutButton"
+          ).classList.remove("hidden");
 
-          document.getElementById("loginToggleButton")
-            .classList.add("hidden");
+          document.getElementById(
+            "loginToggleButton"
+          ).classList.add("hidden");
 
           await cleanupExpiredPosts();
 
@@ -946,14 +1268,17 @@
 
         } else {
 
-          document.getElementById("newPostCard")
-            .style.display = "none";
+          document.getElementById(
+            "newPostCard"
+          ).style.display = "none";
 
-          document.getElementById("logoutButton")
-            .classList.add("hidden");
+          document.getElementById(
+            "logoutButton"
+          ).classList.add("hidden");
 
-          document.getElementById("loginToggleButton")
-            .classList.remove("hidden");
+          document.getElementById(
+            "loginToggleButton"
+          ).classList.remove("hidden");
 
         }
 
@@ -976,8 +1301,15 @@
       } = await supabaseClient
         .from("posts")
         .select("id, photo_url")
-        .not("expires_at", "is", null)
-        .lte("expires_at", now);
+        .not(
+          "expires_at",
+          "is",
+          null
+        )
+        .lte(
+          "expires_at",
+          now
+        );
 
       if (error) {
 
@@ -989,19 +1321,27 @@
         return;
       }
 
-      if (!expiredPosts || expiredPosts.length === 0) {
+      if (
+        !expiredPosts ||
+        expiredPosts.length === 0
+      ) {
         return;
       }
 
-      for (const post of expiredPosts) {
+      for (
+        const post of expiredPosts
+      ) {
 
         if (post.photo_url) {
 
           const {
             error: photoError
-          } = await supabaseClient.storage
+          } = await supabaseClient
+            .storage
             .from("family-photos")
-            .remove([post.photo_url]);
+            .remove([
+              post.photo_url
+            ]);
 
           if (photoError) {
 
@@ -1017,7 +1357,10 @@
         } = await supabaseClient
           .from("posts")
           .delete()
-          .eq("id", post.id);
+          .eq(
+            "id",
+            post.id
+          );
 
         if (deleteError) {
 
@@ -1034,23 +1377,33 @@
     // LOAD REACTIONS
     // --------------------------------------------------
 
-    async function getReactionData(postIds) {
+    async function getReactionData(
+      postIds
+    ) {
 
       const reactionData = {};
 
-      for (const postId of postIds) {
+      for (
+        const postId of postIds
+      ) {
 
         reactionData[postId] = {
           counts: {},
           userReaction: null
         };
 
-        for (const reaction of REACTIONS) {
-          reactionData[postId].counts[reaction] = 0;
+        for (
+          const reaction of REACTIONS
+        ) {
+
+          reactionData[postId]
+            .counts[reaction] = 0;
         }
       }
 
-      if (postIds.length === 0) {
+      if (
+        postIds.length === 0
+      ) {
         return reactionData;
       }
 
@@ -1059,8 +1412,13 @@
         error
       } = await supabaseClient
         .from("reactions")
-        .select("post_id, user_id, reaction")
-        .in("post_id", postIds);
+        .select(
+          "post_id, user_id, reaction"
+        )
+        .in(
+          "post_id",
+          postIds
+        );
 
       if (error) {
 
@@ -1074,33 +1432,52 @@
 
       const {
         data: userData
-      } = await supabaseClient.auth.getUser();
+      } = await supabaseClient
+        .auth
+        .getUser();
 
       const currentUserId =
-        userData?.user?.id || null;
+        userData?.user?.id ||
+        null;
 
-      for (const reaction of reactions || []) {
+      for (
+        const reaction of
+        reactions || []
+      ) {
 
-        if (!reactionData[reaction.post_id]) {
+        if (
+          !reactionData[
+            reaction.post_id
+          ]
+        ) {
           continue;
         }
 
         if (
-          reactionData[reaction.post_id]
-            .counts[reaction.reaction] !== undefined
+          reactionData[
+            reaction.post_id
+          ].counts[
+            reaction.reaction
+          ] !== undefined
         ) {
 
-          reactionData[reaction.post_id]
-            .counts[reaction.reaction]++;
+          reactionData[
+            reaction.post_id
+          ].counts[
+            reaction.reaction
+          ]++;
         }
 
         if (
           currentUserId &&
-          reaction.user_id === currentUserId
+          reaction.user_id ===
+            currentUserId
         ) {
 
-          reactionData[reaction.post_id]
-            .userReaction = reaction.reaction;
+          reactionData[
+            reaction.post_id
+          ].userReaction =
+            reaction.reaction;
         }
       }
 
@@ -1120,30 +1497,39 @@
       return `
         <div class="reactions">
 
-          ${REACTIONS.map(reaction => {
+          ${
+            REACTIONS
+              .map(reaction => {
 
-            const count =
-              reactionInfo.counts[reaction] || 0;
+                const count =
+                  reactionInfo
+                    .counts[
+                      reaction
+                    ] || 0;
 
-            const active =
-              reactionInfo.userReaction === reaction
-                ? "active"
-                : "";
+                const active =
+                  reactionInfo
+                    .userReaction ===
+                  reaction
+                    ? "active"
+                    : "";
 
-            return `
-              <button
-                class="reaction-button ${active}"
-                onclick="toggleReaction('${postId}', '${reaction}')"
-                aria-label="React ${reaction}"
-              >
-                ${reaction}
-                <span class="reaction-count">
-                  ${count}
-                </span>
-              </button>
-            `;
+                return `
+                  <button
+                    class="reaction-button ${active}"
+                    onclick="toggleReaction('${postId}', '${reaction}')"
+                    aria-label="React ${reaction}"
+                  >
+                    ${reaction}
+                    <span class="reaction-count">
+                      ${count}
+                    </span>
+                  </button>
+                `;
 
-          }).join("")}
+              })
+              .join("")
+          }
 
         </div>
       `;
@@ -1161,7 +1547,9 @@
 
       const {
         data: userData
-      } = await supabaseClient.auth.getUser();
+      } = await supabaseClient
+        .auth
+        .getUser();
 
       const user =
         userData?.user;
@@ -1180,9 +1568,17 @@
         error: findError
       } = await supabaseClient
         .from("reactions")
-        .select("id, reaction")
-        .eq("post_id", postId)
-        .eq("user_id", user.id)
+        .select(
+          "id, reaction"
+        )
+        .eq(
+          "post_id",
+          postId
+        )
+        .eq(
+          "user_id",
+          user.id
+        )
         .maybeSingle();
 
       if (findError) {
@@ -1197,7 +1593,8 @@
 
       if (
         existingReaction &&
-        existingReaction.reaction === reaction
+        existingReaction.reaction ===
+          reaction
       ) {
 
         const {
@@ -1205,7 +1602,10 @@
         } = await supabaseClient
           .from("reactions")
           .delete()
-          .eq("id", existingReaction.id);
+          .eq(
+            "id",
+            existingReaction.id
+          );
 
         if (error) {
 
@@ -1231,7 +1631,10 @@
           .update({
             reaction: reaction
           })
-          .eq("id", existingReaction.id);
+          .eq(
+            "id",
+            existingReaction.id
+          );
 
         if (error) {
 
@@ -1276,15 +1679,23 @@
     // LOAD COMMENTS
     // --------------------------------------------------
 
-    async function getCommentData(postIds) {
+    async function getCommentData(
+      postIds
+    ) {
 
       const commentData = {};
 
-      for (const postId of postIds) {
+      for (
+        const postId of postIds
+      ) {
+
         commentData[postId] = [];
       }
 
-      if (postIds.length === 0) {
+      if (
+        postIds.length === 0
+      ) {
+
         return commentData;
       }
 
@@ -1296,10 +1707,16 @@
         .select(
           "id, post_id, user_id, comment, created_at"
         )
-        .in("post_id", postIds)
-        .order("created_at", {
-          ascending: true
-        });
+        .in(
+          "post_id",
+          postIds
+        )
+        .order(
+          "created_at",
+          {
+            ascending: true
+          }
+        );
 
       if (error) {
 
@@ -1313,29 +1730,43 @@
 
       const {
         data: userData
-      } = await supabaseClient.auth.getUser();
+      } = await supabaseClient
+        .auth
+        .getUser();
 
       const currentUserId =
-        userData?.user?.id || null;
+        userData?.user?.id ||
+        null;
 
       const currentUserEmail =
-        userData?.user?.email || "";
+        userData?.user?.email ||
+        "";
 
-      for (const comment of comments || []) {
+      for (
+        const comment of
+        comments || []
+      ) {
 
-        if (!commentData[comment.post_id]) {
+        if (
+          !commentData[
+            comment.post_id
+          ]
+        ) {
           continue;
         }
 
         comment.isOwn =
-          currentUserId === comment.user_id;
+          currentUserId ===
+          comment.user_id;
 
         comment.author =
           comment.isOwn
             ? currentUserEmail
             : "Family member";
 
-        commentData[comment.post_id].push(comment);
+        commentData[
+          comment.post_id
+        ].push(comment);
       }
 
       return commentData;
@@ -1354,57 +1785,67 @@
       const commentsHtml =
         comments.length > 0
 
-          ? comments.map(comment => {
+          ? comments
+              .map(comment => {
 
-              const date =
-                new Date(comment.created_at);
+                const date =
+                  new Date(
+                    comment.created_at
+                  );
 
-              const formattedDate =
-                date.toLocaleString(
-                  undefined,
-                  {
-                    dateStyle: "medium",
-                    timeStyle: "short"
-                  }
-                );
+                const formattedDate =
+                  date.toLocaleString(
+                    undefined,
+                    {
+                      dateStyle:
+                        "medium",
+                      timeStyle:
+                        "short"
+                    }
+                  );
 
-              const deleteButton =
-                comment.isOwn
-                  ? `
-                    <button
-                      class="comment-delete"
-                      onclick="deleteComment(${comment.id})"
-                    >
-                      Delete
-                    </button>
-                  `
-                  : "";
+                const deleteButton =
+                  comment.isOwn
+                    ? `
+                      <button
+                        class="comment-delete"
+                        onclick="deleteComment(${comment.id})"
+                      >
+                        Delete
+                      </button>
+                    `
+                    : "";
 
-              return `
-                <div class="comment">
+                return `
+                  <div class="comment">
 
-                  <div class="comment-header">
+                    <div class="comment-header">
 
-                    <div class="comment-author">
-                      ${escapeHtml(comment.author)}
+                      <div class="comment-author">
+                        ${escapeHtml(
+                          comment.author
+                        )}
+                      </div>
+
+                      <div class="comment-date">
+                        ${formattedDate}
+                      </div>
+
                     </div>
 
-                    <div class="comment-date">
-                      ${formattedDate}
+                    <div class="comment-text">
+                      ${escapeHtml(
+                        comment.comment
+                      )}
                     </div>
 
+                    ${deleteButton}
+
                   </div>
+                `;
 
-                  <div class="comment-text">
-                    ${escapeHtml(comment.comment)}
-                  </div>
-
-                  ${deleteButton}
-
-                </div>
-              `;
-
-            }).join("")
+              })
+              .join("")
 
           : `
             <div class="no-comments">
@@ -1455,11 +1896,15 @@
       postId
     ) {
 
-      if (event.key === "Enter") {
+      if (
+        event.key === "Enter"
+      ) {
 
         event.preventDefault();
 
-        submitComment(postId);
+        submitComment(
+          postId
+        );
       }
     }
 
@@ -1468,7 +1913,9 @@
     // ADD COMMENT
     // --------------------------------------------------
 
-    async function submitComment(postId) {
+    async function submitComment(
+      postId
+    ) {
 
       const input =
         document.getElementById(
@@ -1488,7 +1935,9 @@
 
       const {
         data: userData
-      } = await supabaseClient.auth.getUser();
+      } = await supabaseClient
+        .auth
+        .getUser();
 
       const user =
         userData?.user;
@@ -1534,7 +1983,9 @@
     // DELETE COMMENT
     // --------------------------------------------------
 
-    async function deleteComment(commentId) {
+    async function deleteComment(
+      commentId
+    ) {
 
       const confirmed =
         confirm(
@@ -1550,7 +2001,10 @@
       } = await supabaseClient
         .from("comments")
         .delete()
-        .eq("id", commentId);
+        .eq(
+          "id",
+          commentId
+        );
 
       if (error) {
 
@@ -1573,7 +2027,9 @@
     async function loadPosts() {
 
       const feed =
-        document.getElementById("feed");
+        document.getElementById(
+          "feed"
+        );
 
       feed.innerHTML = `
         <div class="empty-state">
@@ -1593,16 +2049,21 @@
         .or(
           `expires_at.is.null,expires_at.gt.${now}`
         )
-        .order("created_at", {
-          ascending: false
-        });
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
 
       if (error) {
 
         feed.innerHTML = `
           <div class="empty-state">
             Could not load updates.<br><br>
-            ${escapeHtml(error.message)}
+            ${escapeHtml(
+              error.message
+            )}
           </div>
         `;
 
@@ -1611,7 +2072,10 @@
         return;
       }
 
-      if (!data || data.length === 0) {
+      if (
+        !data ||
+        data.length === 0
+      ) {
 
         feed.innerHTML = `
           <div class="empty-state">
@@ -1625,38 +2089,51 @@
       }
 
       const postIds =
-        data.map(post => post.id);
+        data.map(
+          post => post.id
+        );
 
       const reactionData =
-        await getReactionData(postIds);
+        await getReactionData(
+          postIds
+        );
 
       const commentData =
-        await getCommentData(postIds);
+        await getCommentData(
+          postIds
+        );
 
       feed.innerHTML = "";
 
-      // Reset slideshow data
-
       slideshowPosts = [];
 
-      for (const post of data) {
+
+      for (
+        const post of data
+      ) {
 
         let imageHtml = "";
 
-        let slideshowImageUrl = null;
+        let slideshowImageUrl =
+          null;
 
 
         // ----------------------------------------------
         // PRIVATE PHOTO
         // ----------------------------------------------
 
-        if (post.photo_url) {
+        if (
+          post.photo_url
+        ) {
 
           const {
             data: signedData,
             error: signedError
-          } = await supabaseClient.storage
-            .from("family-photos")
+          } = await supabaseClient
+            .storage
+            .from(
+              "family-photos"
+            )
             .createSignedUrl(
               post.photo_url,
               60 * 60
@@ -1672,7 +2149,9 @@
 
             imageHtml = `
               <img
-                src="${escapeHtml(signedData.signedUrl)}"
+                src="${escapeHtml(
+                  signedData.signedUrl
+                )}"
                 alt="Family update"
               >
             `;
@@ -1686,11 +2165,15 @@
 
         let messageHtml = "";
 
-        if (post.message) {
+        if (
+          post.message
+        ) {
 
           messageHtml = `
             <div class="post-message">
-              ${escapeHtml(post.message)}
+              ${escapeHtml(
+                post.message
+              )}
             </div>
           `;
         }
@@ -1701,14 +2184,18 @@
         // ----------------------------------------------
 
         const date =
-          new Date(post.created_at);
+          new Date(
+            post.created_at
+          );
 
         const formattedDate =
           date.toLocaleString(
             undefined,
             {
-              dateStyle: "medium",
-              timeStyle: "short"
+              dateStyle:
+                "medium",
+              timeStyle:
+                "short"
             }
           );
 
@@ -1719,11 +2206,15 @@
 
         let locationHtml = "";
 
-        if (post.location) {
+        if (
+          post.location
+        ) {
 
           locationHtml = `
             <div class="location">
-              📍 ${escapeHtml(post.location)}
+              📍 ${escapeHtml(
+                post.location
+              )}
             </div>
           `;
         }
@@ -1735,18 +2226,24 @@
 
         let expiryHtml = "";
 
-        if (post.expires_at) {
+        if (
+          post.expires_at
+        ) {
 
           const expiryDate =
-            new Date(post.expires_at);
+            new Date(
+              post.expires_at
+            );
 
           expiryHtml = `
             <div>
               ⏰ Until ${expiryDate.toLocaleString(
                 undefined,
                 {
-                  dateStyle: "medium",
-                  timeStyle: "short"
+                  dateStyle:
+                    "medium",
+                  timeStyle:
+                    "short"
                 }
               )}
             </div>
@@ -1759,9 +2256,12 @@
         // ----------------------------------------------
 
         const postReactionData =
-          reactionData[post.id] || {
+          reactionData[
+            post.id
+          ] || {
             counts: {},
-            userReaction: null
+            userReaction:
+              null
           };
 
         const reactionsHtml =
@@ -1776,7 +2276,9 @@
         // ----------------------------------------------
 
         const postComments =
-          commentData[post.id] || [];
+          commentData[
+            post.id
+          ] || [];
 
         const commentsHtml =
           createCommentHtml(
@@ -1790,10 +2292,17 @@
         // ----------------------------------------------
 
         slideshowPosts.push({
-          imageUrl: slideshowImageUrl,
-          message: post.message || "",
-          date: formattedDate,
-          location: post.location || ""
+          imageUrl:
+            slideshowImageUrl,
+
+          message:
+            post.message || "",
+
+          date:
+            formattedDate,
+
+          location:
+            post.location || ""
         });
 
 
@@ -1802,9 +2311,12 @@
         // ----------------------------------------------
 
         const postElement =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
 
-        postElement.className = "post";
+        postElement.className =
+          "post";
 
         postElement.innerHTML = `
           ${imageHtml}
@@ -1823,7 +2335,16 @@
 
             <button
               class="delete-button"
-              onclick="deletePost('${post.id}', ${post.photo_url ? `'${escapeJs(post.photo_url)}'` : "null"})"
+              onclick="deletePost(
+                '${post.id}',
+                ${
+                  post.photo_url
+                    ? `'${escapeJs(
+                        post.photo_url
+                      )}'`
+                    : "null"
+                }
+              )"
             >
               🗑️ Delete
             </button>
@@ -1833,18 +2354,22 @@
           ${commentsHtml}
         `;
 
-        feed.appendChild(postElement);
+        feed.appendChild(
+          postElement
+        );
       }
     }
 
 
-    // --------------------------------------------------
+    // ==================================================
     // SLIDESHOW
-    // --------------------------------------------------
+    // ==================================================
 
     function openSlideshow() {
 
-      if (slideshowPosts.length === 0) {
+      if (
+        slideshowPosts.length === 0
+      ) {
 
         alert(
           "There are no updates to show yet."
@@ -1860,13 +2385,19 @@
           "slideshow-modal"
         );
 
-      modal.style.display = "flex";
+      modal.style.display =
+        "flex";
 
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow =
+        "hidden";
 
       showSlideshowSlide();
 
       stopSlideshow();
+
+      // Show controls when opening
+
+      showSlideshowControls();
     }
 
 
@@ -1874,14 +2405,28 @@
 
       stopSlideshow();
 
+      if (
+        slideshowControlsTimer
+      ) {
+
+        clearTimeout(
+          slideshowControlsTimer
+        );
+
+        slideshowControlsTimer =
+          null;
+      }
+
       const modal =
         document.getElementById(
           "slideshow-modal"
         );
 
-      modal.style.display = "none";
+      modal.style.display =
+        "none";
 
-      document.body.style.overflow = "";
+      document.body.style.overflow =
+        "";
     }
 
 
@@ -1894,7 +2439,9 @@
       }
 
       const post =
-        slideshowPosts[slideshowIndex];
+        slideshowPosts[
+          slideshowIndex
+        ];
 
       const slide =
         document.getElementById(
@@ -1903,37 +2450,52 @@
 
       let imageHtml = "";
 
-      if (post.imageUrl) {
+      if (
+        post.imageUrl
+      ) {
 
         imageHtml = `
           <img
-            src="${escapeHtml(post.imageUrl)}"
+            src="${escapeHtml(
+              post.imageUrl
+            )}"
             alt="Family update"
           >
         `;
       }
 
+
       let messageHtml = "";
 
-      if (post.message) {
+      if (
+        post.message
+      ) {
 
         messageHtml = `
           <div class="slideshow-message">
-            ${escapeHtml(post.message)}
+            ${escapeHtml(
+              post.message
+            )}
           </div>
         `;
       }
+
 
       let locationHtml = "";
 
-      if (post.location) {
+      if (
+        post.location
+      ) {
 
         locationHtml = `
           <div>
-            📍 ${escapeHtml(post.location)}
+            📍 ${escapeHtml(
+              post.location
+            )}
           </div>
         `;
       }
+
 
       slide.innerHTML = `
         ${imageHtml}
@@ -1941,12 +2503,18 @@
         ${messageHtml}
 
         <div class="slideshow-meta">
-          ${escapeHtml(post.date)}
+          ${escapeHtml(
+            post.date
+          )}
           ${locationHtml}
         </div>
 
         <div class="slideshow-counter">
-          ${slideshowIndex + 1} / ${slideshowPosts.length}
+          ${
+            slideshowIndex + 1
+          } / ${
+            slideshowPosts.length
+          }
         </div>
       `;
     }
@@ -1961,10 +2529,14 @@
       }
 
       slideshowIndex =
-        (slideshowIndex + 1) %
+        (
+          slideshowIndex + 1
+        ) %
         slideshowPosts.length;
 
       showSlideshowSlide();
+
+      resetSlideshowControlsTimer();
     }
 
 
@@ -1977,11 +2549,15 @@
       }
 
       slideshowIndex =
-        (slideshowIndex - 1 +
-          slideshowPosts.length) %
+        (
+          slideshowIndex - 1 +
+          slideshowPosts.length
+        ) %
         slideshowPosts.length;
 
       showSlideshowSlide();
+
+      resetSlideshowControlsTimer();
     }
 
 
@@ -1999,7 +2575,14 @@
 
       document.getElementById(
         "slideshow-play-button"
-      ).textContent = "⏸️ Pause";
+      ).textContent = "Pause";
+
+      /*
+        Show controls briefly when playback starts.
+        They then disappear automatically.
+      */
+
+      showSlideshowControls();
 
       slideshowTimer =
         setInterval(() => {
@@ -2012,7 +2595,9 @@
 
     function stopSlideshow() {
 
-      if (slideshowTimer) {
+      if (
+        slideshowTimer
+      ) {
 
         clearInterval(
           slideshowTimer
@@ -2031,23 +2616,86 @@
       if (button) {
 
         button.textContent =
-          "▶️ Play";
+          "Play";
       }
     }
 
 
     function toggleSlideshow() {
 
-      if (slideshowPlaying) {
+      if (
+        slideshowPlaying
+      ) {
 
         stopSlideshow();
+
+        showSlideshowControls();
 
       } else {
 
         startSlideshow();
-
       }
     }
+
+
+    // ==================================================
+    // SHOW CONTROLS WHEN USER INTERACTS WITH SLIDESHOW
+    // ==================================================
+
+    const slideshowContent =
+      document.getElementById(
+        "slideshow-content"
+      );
+
+
+    slideshowContent.addEventListener(
+      "mousemove",
+      () => {
+
+        resetSlideshowControlsTimer();
+
+      }
+    );
+
+
+    slideshowContent.addEventListener(
+      "touchstart",
+      () => {
+
+        resetSlideshowControlsTimer();
+
+      },
+      {
+        passive: true
+      }
+    );
+
+
+    slideshowContent.addEventListener(
+      "click",
+      event => {
+
+        /*
+          Don't interfere with buttons.
+          Clicking an actual button already
+          performs its normal action.
+        */
+
+        if (
+          event.target.closest(
+            "button"
+          )
+        ) {
+
+          resetSlideshowControlsTimer();
+
+          return;
+        }
+
+        resetSlideshowControlsTimer();
+
+      }
+    );
 
 
     // --------------------------------------------------
@@ -2064,24 +2712,36 @@
           );
 
         if (
-          modal.style.display !== "flex"
+          modal.style.display !==
+          "flex"
         ) {
           return;
         }
 
-        if (event.key === "Escape") {
+        resetSlideshowControlsTimer();
+
+
+        if (
+          event.key === "Escape"
+        ) {
 
           closeSlideshow();
 
-        } else if (event.key === "ArrowRight") {
+        } else if (
+          event.key === "ArrowRight"
+        ) {
 
           nextSlide();
 
-        } else if (event.key === "ArrowLeft") {
+        } else if (
+          event.key === "ArrowLeft"
+        ) {
 
           previousSlide();
 
-        } else if (event.key === " ") {
+        } else if (
+          event.key === " "
+        ) {
 
           event.preventDefault();
 
@@ -2098,19 +2758,29 @@
     async function createPost() {
 
       const photoInput =
-        document.getElementById("photo");
+        document.getElementById(
+          "photo"
+        );
 
       const messageInput =
-        document.getElementById("message");
+        document.getElementById(
+          "message"
+        );
 
       const locationInput =
-        document.getElementById("location");
+        document.getElementById(
+          "location"
+        );
 
       const expiryInput =
-        document.getElementById("expiry");
+        document.getElementById(
+          "expiry"
+        );
 
       const status =
-        document.getElementById("postStatus");
+        document.getElementById(
+          "postStatus"
+        );
 
       const file =
         photoInput.files[0];
@@ -2124,7 +2794,10 @@
       const expiry =
         expiryInput.value;
 
-      if (!file && !message) {
+      if (
+        !file &&
+        !message
+      ) {
 
         status.textContent =
           "Please add a picture or a message.";
@@ -2137,9 +2810,13 @@
 
       const {
         data: userData
-      } = await supabaseClient.auth.getUser();
+      } = await supabaseClient
+        .auth
+        .getUser();
 
-      if (!userData?.user) {
+      if (
+        !userData?.user
+      ) {
 
         status.textContent =
           "Please log in again.";
@@ -2152,20 +2829,34 @@
       // EXPIRATION
       // ----------------------------------------------
 
-      let expiresAt = null;
+      let expiresAt =
+        null;
 
-      if (expiry === "24h") {
+      if (
+        expiry === "24h"
+      ) {
 
         expiresAt =
           new Date(
-            Date.now() + 24 * 60 * 60 * 1000
+            Date.now() +
+            24 *
+            60 *
+            60 *
+            1000
           ).toISOString();
 
-      } else if (expiry === "1week") {
+      } else if (
+        expiry === "1week"
+      ) {
 
         expiresAt =
           new Date(
-            Date.now() + 7 * 24 * 60 * 60 * 1000
+            Date.now() +
+            7 *
+            24 *
+            60 *
+            60 *
+            1000
           ).toISOString();
       }
 
@@ -2174,7 +2865,8 @@
       // UPLOAD PHOTO
       // ----------------------------------------------
 
-      let photoPath = null;
+      let photoPath =
+        null;
 
       if (file) {
 
@@ -2195,14 +2887,19 @@
 
         const {
           error: uploadError
-        } = await supabaseClient.storage
-          .from("family-photos")
+        } = await supabaseClient
+          .storage
+          .from(
+            "family-photos"
+          )
           .upload(
             fileName,
             file
           );
 
-        if (uploadError) {
+        if (
+          uploadError
+        ) {
 
           status.textContent =
             "Photo upload failed: " +
@@ -2237,15 +2934,25 @@
 
           expires_at:
             expiresAt
+
         });
 
-      if (insertError) {
+      if (
+        insertError
+      ) {
 
-        if (photoPath) {
+        if (
+          photoPath
+        ) {
 
-          await supabaseClient.storage
-            .from("family-photos")
-            .remove([photoPath]);
+          await supabaseClient
+            .storage
+            .from(
+              "family-photos"
+            )
+            .remove([
+              photoPath
+            ]);
         }
 
         status.textContent =
@@ -2260,13 +2967,17 @@
       // RESET
       // ----------------------------------------------
 
-      photoInput.value = "";
+      photoInput.value =
+        "";
 
-      messageInput.value = "";
+      messageInput.value =
+        "";
 
-      locationInput.value = "";
+      locationInput.value =
+        "";
 
-      expiryInput.value = "forever";
+      expiryInput.value =
+        "forever";
 
       status.textContent =
         "Shared";
@@ -2275,7 +2986,8 @@
 
       setTimeout(() => {
 
-        status.textContent = "";
+        status.textContent =
+          "";
 
       }, 3000);
     }
@@ -2295,19 +3007,30 @@
           "Delete this update?\n\nThis cannot be undone."
         );
 
-      if (!confirmed) {
+      if (
+        !confirmed
+      ) {
         return;
       }
 
-      if (photoPath) {
+      if (
+        photoPath
+      ) {
 
         const {
           error: photoError
-        } = await supabaseClient.storage
-          .from("family-photos")
-          .remove([photoPath]);
+        } = await supabaseClient
+          .storage
+          .from(
+            "family-photos"
+          )
+          .remove([
+            photoPath
+          ]);
 
-        if (photoError) {
+        if (
+          photoError
+        ) {
 
           console.error(
             "Photo deletion failed:",
@@ -2321,9 +3044,14 @@
       } = await supabaseClient
         .from("posts")
         .delete()
-        .eq("id", postId);
+        .eq(
+          "id",
+          postId
+        );
 
-      if (error) {
+      if (
+        error
+      ) {
 
         alert(
           "Could not delete the update: " +
@@ -2341,14 +3069,31 @@
     // ESCAPE HTML
     // --------------------------------------------------
 
-    function escapeHtml(value) {
+    function escapeHtml(
+      value
+    ) {
 
       return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
     }
 
 
@@ -2356,14 +3101,31 @@
     // ESCAPE JAVASCRIPT STRINGS
     // --------------------------------------------------
 
-    function escapeJs(value) {
+    function escapeJs(
+      value
+    ) {
 
       return String(value)
-        .replace(/\\/g, "\\\\")
-        .replace(/'/g, "\\'")
-        .replace(/"/g, '\\"')
-        .replace(/\n/g, "\\n")
-        .replace(/\r/g, "\\r");
+        .replace(
+          /\\/g,
+          "\\\\"
+        )
+        .replace(
+          /'/g,
+          "\\'"
+        )
+        .replace(
+          /"/g,
+          '\\"'
+        )
+        .replace(
+          /\n/g,
+          "\\n"
+        )
+        .replace(
+          /\r/g,
+          "\\r"
+        );
     }
 
 
@@ -2375,18 +3137,30 @@
 
       const {
         data
-      } = await supabaseClient.auth.getSession();
+      } = await supabaseClient
+        .auth
+        .getSession();
 
-      if (data?.session) {
+      if (
+        data?.session
+      ) {
 
-        document.getElementById("newPostCard")
-          .style.display = "block";
+        document.getElementById(
+          "newPostCard"
+        ).style.display =
+          "block";
 
-        document.getElementById("logoutButton")
-          .classList.remove("hidden");
+        document.getElementById(
+          "logoutButton"
+        ).classList.remove(
+          "hidden"
+        );
 
-        document.getElementById("loginToggleButton")
-          .classList.add("hidden");
+        document.getElementById(
+          "loginToggleButton"
+        ).classList.add(
+          "hidden"
+        );
 
         await cleanupExpiredPosts();
 
@@ -2402,31 +3176,39 @@
     // SERVICE WORKER / PWA
     // --------------------------------------------------
 
-    if ("serviceWorker" in navigator) {
+    if (
+      "serviceWorker" in
+      navigator
+    ) {
 
-      window.addEventListener("load", () => {
+      window.addEventListener(
+        "load",
+        () => {
 
-        navigator.serviceWorker
-          .register("./service-worker.js")
+          navigator.serviceWorker
+            .register(
+              "./service-worker.js"
+            )
 
-          .then(() => {
+            .then(() => {
 
-            console.log(
-              "Service worker registered"
-            );
+              console.log(
+                "Service worker registered"
+              );
 
-          })
+            })
 
-          .catch(error => {
+            .catch(error => {
 
-            console.error(
-              "Service worker registration failed:",
-              error
-            );
+              console.error(
+                "Service worker registration failed:",
+                error
+              );
 
-          });
+            });
 
-      });
+        }
+      );
     }
 
   </script>
