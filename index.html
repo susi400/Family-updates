@@ -281,6 +281,100 @@
       margin-left: 2px;
     }
 
+    /* COMMENTS */
+
+    .comments-section {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .comments-title {
+      color: var(--header);
+      font-family: "Raleway", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .comment {
+      background: #fffaf7;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 9px;
+    }
+
+    .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+
+    .comment-author {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--header);
+    }
+
+    .comment-date {
+      font-size: 11px;
+      color: var(--soft-text);
+      white-space: nowrap;
+    }
+
+    .comment-text {
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-delete {
+      border: none;
+      background: none;
+      color: var(--delete);
+      box-shadow: none;
+      padding: 2px 0;
+      font-size: 11px;
+      font-weight: 500;
+      margin-top: 5px;
+    }
+
+    .comment-delete:hover {
+      text-decoration: underline;
+      background: none;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      align-items: stretch;
+    }
+
+    .comment-input {
+      flex: 1;
+      min-width: 0;
+      padding: 11px 14px;
+      border-radius: 16px;
+    }
+
+    .comment-send {
+      flex-shrink: 0;
+      padding: 10px 15px;
+      border-radius: 16px;
+      font-size: 14px;
+    }
+
+    .no-comments {
+      color: var(--soft-text);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
     .empty-state {
       text-align: center;
       color: var(--soft-text);
@@ -335,6 +429,19 @@
 
       .reactions {
         width: 100%;
+      }
+
+      .comment-form {
+        flex-direction: column;
+      }
+
+      .comment-send {
+        width: 100%;
+      }
+
+      .comment-header {
+        flex-direction: column;
+        gap: 3px;
       }
     }
   </style>
@@ -672,7 +779,6 @@
 
       for (const post of expiredPosts) {
 
-        // Delete associated photo first
         if (post.photo_url) {
 
           const {
@@ -691,7 +797,6 @@
         }
 
 
-        // Delete database record
         const {
           error: deleteError
         } = await supabaseClient
@@ -719,6 +824,7 @@
       const reactionData = {};
 
       for (const postId of postIds) {
+
         reactionData[postId] = {
           counts: {},
           userReaction: null
@@ -850,7 +956,6 @@
         data: userData
       } = await supabaseClient.auth.getUser();
 
-
       const user =
         userData?.user;
 
@@ -887,7 +992,6 @@
       }
 
 
-      // Tapping the same reaction removes it
       if (
         existingReaction &&
         existingReaction.reaction === reaction
@@ -917,7 +1021,6 @@
       }
 
 
-      // If another reaction exists, change it
       if (existingReaction) {
 
         const {
@@ -946,7 +1049,6 @@
       }
 
 
-      // Otherwise create a new reaction
       const {
         error
       } = await supabaseClient
@@ -962,6 +1064,324 @@
 
         alert(
           "Could not add your reaction: " +
+          error.message
+        );
+
+        return;
+      }
+
+
+      await loadPosts();
+    }
+
+
+    // --------------------------------------------------
+    // LOAD COMMENTS
+    // --------------------------------------------------
+
+    async function getCommentData(postIds) {
+
+      const commentData = {};
+
+      for (const postId of postIds) {
+
+        commentData[postId] = [];
+      }
+
+
+      if (postIds.length === 0) {
+        return commentData;
+      }
+
+
+      const {
+        data: comments,
+        error
+      } = await supabaseClient
+        .from("comments")
+        .select(
+          "id, post_id, user_id, comment, created_at"
+        )
+        .in("post_id", postIds)
+        .order("created_at", {
+          ascending: true
+        });
+
+
+      if (error) {
+
+        console.error(
+          "Could not load comments:",
+          error
+        );
+
+        return commentData;
+      }
+
+
+      const {
+        data: userData
+      } = await supabaseClient.auth.getUser();
+
+      const currentUserId =
+        userData?.user?.id || null;
+
+      const currentUserEmail =
+        userData?.user?.email || "";
+
+
+      for (const comment of comments || []) {
+
+        if (!commentData[comment.post_id]) {
+          continue;
+        }
+
+
+        comment.isOwn =
+          currentUserId === comment.user_id;
+
+        comment.author =
+          comment.isOwn
+            ? currentUserEmail
+            : "Family member";
+
+        commentData[comment.post_id].push(comment);
+      }
+
+
+      return commentData;
+    }
+
+
+    // --------------------------------------------------
+    // COMMENT HTML
+    // --------------------------------------------------
+
+    function createCommentHtml(
+      postId,
+      comments
+    ) {
+
+      const commentsHtml =
+        comments.length > 0
+
+          ? comments.map(comment => {
+
+              const date =
+                new Date(comment.created_at);
+
+              const formattedDate =
+                date.toLocaleString(
+                  undefined,
+                  {
+                    dateStyle: "medium",
+                    timeStyle: "short"
+                  }
+                );
+
+              const deleteButton =
+                comment.isOwn
+                  ? `
+                    <button
+                      class="comment-delete"
+                      onclick="deleteComment(${comment.id})"
+                    >
+                      Delete
+                    </button>
+                  `
+                  : "";
+
+              return `
+                <div class="comment">
+
+                  <div class="comment-header">
+
+                    <div class="comment-author">
+                      ${escapeHtml(comment.author)}
+                    </div>
+
+                    <div class="comment-date">
+                      ${formattedDate}
+                    </div>
+
+                  </div>
+
+                  <div class="comment-text">
+                    ${escapeHtml(comment.comment)}
+                  </div>
+
+                  ${deleteButton}
+
+                </div>
+              `;
+
+            }).join("")
+
+          : `
+            <div class="no-comments">
+              No comments yet. Be the first to say something 🩷
+            </div>
+          `;
+
+
+      return `
+        <div class="comments-section">
+
+          <div class="comments-title">
+            💬 Comments
+          </div>
+
+          ${commentsHtml}
+
+          <div class="comment-form">
+
+            <input
+              id="comment-input-${postId}"
+              class="comment-input"
+              type="text"
+              placeholder="Write a comment..."
+              maxlength="1000"
+              onkeydown="handleCommentKeydown(event, '${postId}')"
+            >
+
+            <button
+              class="comment-send"
+              onclick="submitComment('${postId}')"
+            >
+              Send
+            </button>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+
+    // --------------------------------------------------
+    // COMMENT ENTER KEY
+    // --------------------------------------------------
+
+    function handleCommentKeydown(
+      event,
+      postId
+    ) {
+
+      if (event.key === "Enter") {
+
+        event.preventDefault();
+
+        submitComment(postId);
+      }
+    }
+
+
+    // --------------------------------------------------
+    // ADD COMMENT
+    // --------------------------------------------------
+
+    async function submitComment(postId) {
+
+      const input =
+        document.getElementById(
+          `comment-input-${postId}`
+        );
+
+
+      if (!input) {
+        return;
+      }
+
+
+      const comment =
+        input.value.trim();
+
+
+      if (!comment) {
+        return;
+      }
+
+
+      const {
+        data: userData
+      } = await supabaseClient.auth.getUser();
+
+
+      const user =
+        userData?.user;
+
+
+      if (!user) {
+
+        alert(
+          "Please log in to comment."
+        );
+
+        return;
+      }
+
+
+      input.disabled = true;
+
+
+      const {
+        error
+      } = await supabaseClient
+        .from("comments")
+        .insert({
+          post_id: postId,
+          user_id: user.id,
+          comment: comment
+        });
+
+
+      input.disabled = false;
+
+
+      if (error) {
+
+        alert(
+          "Could not add your comment: " +
+          error.message
+        );
+
+        return;
+      }
+
+
+      await loadPosts();
+    }
+
+
+    // --------------------------------------------------
+    // DELETE COMMENT
+    // --------------------------------------------------
+
+    async function deleteComment(commentId) {
+
+      const confirmed =
+        confirm(
+          "Delete this comment?"
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      const {
+        error
+      } = await supabaseClient
+        .from("comments")
+        .delete()
+        .eq("id", commentId);
+
+
+      if (error) {
+
+        alert(
+          "Could not delete the comment: " +
           error.message
         );
 
@@ -1032,12 +1452,19 @@
       }
 
 
-      // Load all reactions for the visible posts
+      // Load reactions
+
       const postIds =
         data.map(post => post.id);
 
       const reactionData =
         await getReactionData(postIds);
+
+
+      // Load comments
+
+      const commentData =
+        await getCommentData(postIds);
 
 
       feed.innerHTML = "";
@@ -1173,6 +1600,21 @@
 
 
         // ----------------------------------------------
+        // COMMENTS
+        // ----------------------------------------------
+
+        const postComments =
+          commentData[post.id] || [];
+
+
+        const commentsHtml =
+          createCommentHtml(
+            post.id,
+            postComments
+          );
+
+
+        // ----------------------------------------------
         // POST
         // ----------------------------------------------
 
@@ -1204,6 +1646,8 @@
             </button>
 
           </div>
+
+          ${commentsHtml}
         `;
 
         feed.appendChild(postElement);
@@ -1258,10 +1702,6 @@
       status.textContent =
         "Sharing with the family... 🫶";
 
-
-      // ----------------------------------------------
-      // CURRENT USER
-      // ----------------------------------------------
 
       const {
         data: userData
@@ -1376,9 +1816,6 @@
 
       if (insertError) {
 
-        // If database insertion fails after uploading
-        // the photo, clean up the uploaded photo.
-
         if (photoPath) {
 
           await supabaseClient.storage
@@ -1440,10 +1877,6 @@
       }
 
 
-      // ----------------------------------------------
-      // DELETE PHOTO
-      // ----------------------------------------------
-
       if (photoPath) {
 
         const {
@@ -1462,10 +1895,6 @@
         }
       }
 
-
-      // ----------------------------------------------
-      // DELETE POST
-      // ----------------------------------------------
 
       const {
         error
