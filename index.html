@@ -385,7 +385,66 @@
     .hidden {
       display: none !important;
     }
+.slideshow-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.92);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
 
+.slideshow-content {
+  width: 100%;
+  max-width: 900px;
+  max-height: 95vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.slideshow-close {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.9);
+  color: #930527;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  font-size: 20px;
+}
+
+#slideshow-slide {
+  width: 100%;
+  max-height: 80vh;
+  overflow: auto;
+  text-align: center;
+}
+
+#slideshow-slide img {
+  max-width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  border-radius: 14px;
+}
+
+.slideshow-controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.slideshow-controls button {
+  min-width: 48px;
+  min-height: 44px;
+}
     @media (max-width: 600px) {
       header {
         padding: 26px 18px 24px;
