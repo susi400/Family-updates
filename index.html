@@ -54,10 +54,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ==================================================
-       HEADER
-       ================================================== */
-
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -83,18 +79,10 @@
       line-height: 1.6;
     }
 
-    /* ==================================================
-       MAIN
-       ================================================== */
-
     main {
       width: min(820px, calc(100% - 40px));
       margin: 38px auto 70px;
     }
-
-    /* ==================================================
-       TOP BAR
-       ================================================== */
 
     .top-bar {
       display: flex;
@@ -113,26 +101,17 @@
       letter-spacing: -0.3px;
     }
 
-    /* ==================================================
-       BUTTONS
-       ================================================== */
-
     button {
       border: 1px solid var(--accent);
       border-radius: 6px;
       background: var(--accent);
       color: white;
-
       font-family: "Montserrat", sans-serif;
       font-size: 13px;
       font-weight: 600;
-
       padding: 10px 17px;
-
       cursor: pointer;
-
       box-shadow: none;
-
       transition:
         background 0.18s ease,
         border-color 0.18s ease,
@@ -176,10 +155,6 @@
       text-decoration: underline;
     }
 
-    /* ==================================================
-       CARDS
-       ================================================== */
-
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -202,10 +177,6 @@
       font-weight: 600;
     }
 
-    /* ==================================================
-       FORMS
-       ================================================== */
-
     label {
       display: block;
       margin: 18px 0 8px;
@@ -220,20 +191,14 @@
     textarea,
     select {
       width: 100%;
-
       border: 1px solid var(--border-dark);
       border-radius: 5px;
-
       padding: 12px 13px;
-
       background: var(--surface);
       color: var(--ink);
-
       font-family: "Montserrat", sans-serif;
       font-size: 14px;
-
       outline: none;
-
       transition:
         border-color 0.18s ease,
         box-shadow 0.18s ease;
@@ -243,7 +208,6 @@
     textarea:focus,
     select:focus {
       border-color: var(--accent);
-
       box-shadow:
         0 0 0 3px rgba(124, 23, 48, 0.07);
     }
@@ -283,57 +247,41 @@
       line-height: 1.5;
     }
 
-    /* ==================================================
-       FEED POSTS
-       ================================================== */
-
     .post {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-
       padding: 0;
       margin-bottom: 30px;
-
       box-shadow: none;
       overflow: hidden;
     }
 
     .post img {
       display: block;
-
       width: 100%;
       max-height: 620px;
-
       object-fit: cover;
-
       border-radius: 0;
       margin: 0;
     }
 
     .post-message {
       padding: 25px 28px 0;
-
       color: var(--ink);
-
       font-family: "Raleway", sans-serif;
       font-size: 22px;
       font-weight: 500;
-
       line-height: 1.5;
-
       white-space: pre-wrap;
       word-wrap: break-word;
     }
 
     .post-meta {
       padding: 14px 28px 0;
-
       color: var(--muted);
-
       font-size: 11px;
       line-height: 1.7;
-
       letter-spacing: 0.15px;
     }
 
@@ -346,16 +294,10 @@
       justify-content: space-between;
       align-items: center;
       gap: 15px;
-
       margin: 20px 28px 0;
       padding: 14px 0 18px;
-
       border-top: 1px solid var(--border);
     }
-
-    /* ==================================================
-       REACTIONS
-       ================================================== */
 
     .reactions {
       display: flex;
@@ -367,15 +309,11 @@
     .reaction-button {
       background: transparent;
       color: var(--muted);
-
       border: 1px solid transparent;
       border-radius: 5px;
-
       padding: 5px 7px;
-
       font-size: 15px;
       font-weight: 400;
-
       box-shadow: none;
     }
 
@@ -396,10 +334,6 @@
       margin-left: 2px;
     }
 
-    /* ==================================================
-       COMMENTS
-       ================================================== */
-
     .comments-section {
       margin: 0 28px;
       padding: 18px 0 24px;
@@ -408,9 +342,7 @@
 
     .comments-title {
       margin-bottom: 14px;
-
       color: var(--ink);
-
       font-family: "Raleway", sans-serif;
       font-size: 16px;
       font-weight: 600;
@@ -420,7 +352,6 @@
       background: var(--surface-soft);
       border: none;
       border-radius: 6px;
-
       padding: 11px 13px;
       margin-bottom: 7px;
     }
@@ -429,7 +360,6 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-
       gap: 10px;
       margin-bottom: 5px;
     }
@@ -450,7 +380,6 @@
       color: var(--ink);
       font-size: 13px;
       line-height: 1.5;
-
       white-space: pre-wrap;
       word-break: break-word;
     }
@@ -458,14 +387,10 @@
     .comment-delete {
       border: none;
       background: none;
-
       color: var(--danger);
-
       box-shadow: none;
-
       padding: 2px 0;
       margin-top: 5px;
-
       font-size: 10px;
       font-weight: 500;
     }
@@ -502,19 +427,11 @@
       margin-bottom: 10px;
     }
 
-    /* ==================================================
-       EMPTY STATES
-       ================================================== */
-
     .empty-state {
       text-align: center;
-
       color: var(--muted);
-
       font-size: 14px;
-
       padding: 60px 20px;
-
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
@@ -523,23 +440,16 @@
       display: none !important;
     }
 
-    /* ==================================================
-       SLIDESHOW
-       ================================================== */
+    /* SLIDESHOW */
 
     .slideshow-modal {
       display: none;
-
       position: fixed;
       inset: 0;
-
       z-index: 9999;
-
       background: #111;
-
       align-items: center;
       justify-content: center;
-
       padding: 0;
       overflow: hidden;
     }
@@ -547,123 +457,85 @@
     .slideshow-content {
       width: 100vw;
       height: 100vh;
-
       position: relative;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       overflow: hidden;
     }
 
     #slideshow-slide {
       position: absolute;
       inset: 0;
-
       width: 100vw;
       height: 100vh;
-
       display: flex;
       flex-direction: column;
-
       align-items: center;
       justify-content: center;
-
       overflow: hidden;
-
       text-align: center;
       color: white;
-
       padding: 0;
     }
 
     #slideshow-slide img {
       display: block;
-
       width: auto;
       height: auto;
-
       max-width: 100vw;
       max-height: 100vh;
-
       object-fit: contain;
-
       border-radius: 0;
       margin: 0;
     }
 
     .slideshow-message {
       position: absolute;
-
       left: 0;
       right: 0;
       bottom: 72px;
-
       color: white;
-
       font-family: "Raleway", sans-serif;
       font-size: 26px;
       font-weight: 500;
-
       line-height: 1.45;
-
       white-space: pre-wrap;
       word-break: break-word;
-
       max-width: 900px;
-
       margin: 0 auto;
-
       padding: 80px 40px 28px;
-
       background: linear-gradient(
         to bottom,
         rgba(0, 0, 0, 0),
         rgba(0, 0, 0, 0.72)
       );
-
-      text-shadow:
-        0 1px 5px rgba(0, 0, 0, 0.65);
-
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
       z-index: 2;
     }
 
     .slideshow-meta {
       position: absolute;
-
       left: 0;
       right: 0;
       bottom: 43px;
-
       color: rgba(255, 255, 255, 0.78);
-
       font-size: 11px;
       line-height: 1.6;
-
       padding: 0 25px;
-
-      text-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.7);
-
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
       z-index: 3;
     }
 
     .slideshow-counter {
       position: absolute;
-
       bottom: 18px;
       left: 0;
       right: 0;
-
       color: rgba(255, 255, 255, 0.55);
-
       font-size: 10px;
-
       z-index: 3;
-
-      text-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.7);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
     }
 
     .slideshow-close,
@@ -675,26 +547,17 @@
 
     .slideshow-close {
       position: absolute;
-
       top: 22px;
       right: 22px;
-
       z-index: 10;
-
       background: rgba(20, 20, 20, 0.55);
       color: white;
-
       border: 1px solid rgba(255, 255, 255, 0.25);
-
       border-radius: 50%;
-
       width: 40px;
       height: 40px;
-
       padding: 0;
-
       font-size: 16px;
-
       backdrop-filter: blur(8px);
     }
 
@@ -705,36 +568,25 @@
 
     .slideshow-controls {
       position: absolute;
-
       bottom: 15px;
       left: 0;
       right: 0;
-
       display: flex;
-
       gap: 7px;
-
       align-items: center;
       justify-content: center;
-
       z-index: 10;
     }
 
     .slideshow-controls button {
       min-width: 42px;
       min-height: 38px;
-
       padding: 7px 12px;
-
       background: rgba(20, 20, 20, 0.55);
       color: white;
-
       border: 1px solid rgba(255, 255, 255, 0.2);
-
       border-radius: 5px;
-
       box-shadow: none;
-
       backdrop-filter: blur(8px);
     }
 
@@ -753,38 +605,25 @@
       pointer-events: none;
     }
 
-    /* ==================================================
-       NEW POST NOTICE
-       ================================================== */
+    /* NEW POST NOTICE */
 
     .new-post-notice {
       position: fixed;
-
       top: 20px;
       left: 50%;
-
       transform:
         translateX(-50%)
         translateY(-15px);
-
       z-index: 10000;
-
       background: var(--ink);
       color: white;
-
       padding: 11px 18px;
-
       border-radius: 5px;
-
-      box-shadow:
-        0 6px 20px rgba(0, 0, 0, 0.16);
-
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
       font-size: 12px;
       font-weight: 500;
-
       opacity: 0;
       visibility: hidden;
-
       transition:
         opacity 0.25s ease,
         transform 0.25s ease,
@@ -794,15 +633,10 @@
     .new-post-notice.show {
       opacity: 1;
       visibility: visible;
-
       transform:
         translateX(-50%)
         translateY(0);
     }
-
-    /* ==================================================
-       MOBILE
-       ================================================== */
 
     @media (max-width: 600px) {
 
@@ -854,7 +688,6 @@
       .post-footer {
         margin-left: 20px;
         margin-right: 20px;
-
         align-items: flex-start;
         flex-direction: column;
       }
@@ -884,10 +717,7 @@
       .slideshow-message {
         bottom: 72px;
         font-size: 21px;
-        padding:
-          60px
-          20px
-          22px;
+        padding: 60px 20px 22px;
       }
 
       .slideshow-meta {
@@ -2759,7 +2589,7 @@
 
 
     // --------------------------------------------------
-    // SHOW SLIDESHOW CONTROLS
+    // SLIDESHOW TOUCH / MOUSE
     // --------------------------------------------------
 
     const slideshowContent =
@@ -2863,6 +2693,56 @@
         }
       }
     );
+
+
+    // --------------------------------------------------
+    // IOS-SAFE FILE PREPARATION
+    // --------------------------------------------------
+
+    async function prepareFileForUpload(file) {
+
+      if (!file) {
+        return null;
+      }
+
+      try {
+
+        /*
+          Safari / WebKit on some recent iOS versions
+          can send a disk-backed File as an empty request.
+
+          Reading the file into memory first avoids that
+          problem. Supabase accepts ArrayBuffer as an
+          upload body.
+        */
+
+        const fileBytes =
+          await file.arrayBuffer();
+
+        if (
+          !fileBytes ||
+          fileBytes.byteLength === 0
+        ) {
+
+          throw new Error(
+            "The selected photo could not be read."
+          );
+        }
+
+        return fileBytes;
+
+      } catch (error) {
+
+        console.error(
+          "Could not prepare photo:",
+          error
+        );
+
+        throw new Error(
+          "Your device could not read the selected photo. Please try selecting it again."
+        );
+      }
+    }
 
 
     // --------------------------------------------------
@@ -2974,7 +2854,30 @@
       let photoPath =
         null;
 
+
+      // ------------------------------------------------
+      // IOS-SAFE PHOTO UPLOAD
+      // ------------------------------------------------
+
       if (file) {
+
+        let fileBytes;
+
+        try {
+
+          fileBytes =
+            await prepareFileForUpload(
+              file
+            );
+
+        } catch (error) {
+
+          status.textContent =
+            error.message;
+
+          return;
+        }
+
 
         const extension =
           file.name.includes(".")
@@ -2984,12 +2887,19 @@
                 .toLowerCase()
             : "jpg";
 
+
         const fileName =
           Date.now() +
           "-" +
           crypto.randomUUID() +
           "." +
           extension;
+
+
+        const contentType =
+          file.type ||
+          "application/octet-stream";
+
 
         const {
           error: uploadError
@@ -3000,12 +2910,28 @@
           )
           .upload(
             fileName,
-            file
+            fileBytes,
+            {
+              cacheControl:
+                "3600",
+
+              contentType:
+                contentType,
+
+              upsert:
+                false
+            }
           );
+
 
         if (
           uploadError
         ) {
+
+          console.error(
+            "Photo upload failed:",
+            uploadError
+          );
 
           status.textContent =
             "Photo upload failed: " +
@@ -3014,10 +2940,15 @@
           return;
         }
 
+
         photoPath =
           fileName;
       }
 
+
+      // ------------------------------------------------
+      // SAVE JOURNAL ENTRY
+      // ------------------------------------------------
 
       const {
         error: insertError
@@ -3038,6 +2969,7 @@
             expiresAt
 
         });
+
 
       if (
         insertError
@@ -3080,7 +3012,9 @@
       status.textContent =
         "Published";
 
+
       await loadPosts();
+
 
       setTimeout(() => {
 
