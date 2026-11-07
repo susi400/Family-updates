@@ -1,5 +1,4 @@
-
-const CACHE_NAME = "our-family-v2";
+const CACHE_NAME = "our-family-v3";
 
 const FILES_TO_CACHE = [
   "./",
@@ -9,10 +8,10 @@ const FILES_TO_CACHE = [
 
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(FILES_TO_CACHE))
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(FILES_TO_CACHE);
+    })
   );
-
   self.skipWaiting();
 });
 
@@ -26,46 +25,40 @@ self.addEventListener("activate", event => {
       )
     )
   );
-
-  event.waitUntil(self.clients.claim());
+  self.clients.claim();
 });
 
-// Keep the existing network-first caching behavior.
 self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return;
-
   event.respondWith(
-    fetch(event.request)
-      .catch(() => caches.match(event.request))
+    caches.match(event.request).then(cachedResponse => {
+      return cachedResponse || fetch(event.request);
+    })
   );
 });
 
-// Display notifications received from the push service.
+// SHOW PUSH NOTIFICATIONS
 self.addEventListener("push", event => {
-  let payload = {};
+  let data = {};
 
-  try {
-    if (event.data) {
-      payload = event.data.json();
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch {
+      data = {
+        title: "Family Journal",
+        body: event.data.text()
+      };
     }
-  } catch {
-    payload = {
-      title: "Our Family 🩷",
-      body: event.data ? event.data.text() : "A new family update is available."
-    };
   }
 
-  const title = payload.title || "Our Family 🩷";
-
+  const title = data.title || "Family Journal";
   const options = {
-    body: payload.body || "A new family update has been shared.",
-    icon: "./Design%20ohne%20Titel%20(1).png",
-    badge: "./Design%20ohne%20Titel%20(1).png",
+    body: data.body || "A new family update has been posted!",
+    icon: "./icon-192.png",
+    badge: "./icon-192.png",
     data: {
-      url: payload.url || "./"
-    },
-    tag: "family-update",
-    renotify: false
+      url: data.url || "./"
+    }
   };
 
   event.waitUntil(
@@ -73,33 +66,25 @@ self.addEventListener("push", event => {
   );
 });
 
-// Open Family Journal when the notification is tapped.
+// OPEN THE APP WHEN A NOTIFICATION IS CLICKED
 self.addEventListener("notificationclick", event => {
   event.notification.close();
 
-  const targetUrl = new URL(
-    event.notification.data?.url || "./",
-    self.location.origin
-  );
-
-  // Only allow links to this site's origin.
-  if (targetUrl.origin !== self.location.origin) return;
+  const url = event.notification.data?.url || "./";
 
   event.waitUntil(
-    self.clients.matchAll({
+    clients.matchAll({
       type: "window",
       includeUncontrolled: true
-    }).then(async clients => {
-      for (const client of clients) {
+    }).then(windowClients => {
+      for (const client of windowClients) {
         if ("focus" in client) {
-          if ("navigate" in client) {
-            await client.navigate(targetUrl.href);
-          }
+          client.navigate(url);
           return client.focus();
         }
       }
 
-      return self.clients.openWindow(targetUrl.href);
+      return clients.openWindow(url);
     })
   );
 });
