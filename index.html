@@ -1081,7 +1081,21 @@
       >
         View slideshow
       </button>
+<button
+  id="enableNotificationsButton"
+  class="secondary-button hidden"
+  onclick="enablePushNotifications()"
+>
+  Enable notifications
+</button>
 
+<div
+  id="pushStatus"
+  class="status"
+  style="margin: 0 0 24px;"
+  role="status"
+  aria-live="polite"
+></div>
     </div>
 
     <div
@@ -1263,7 +1277,116 @@
     let slideshowControlsTimer = null;
 
     let notificationTimeout = null;
+// EXISTING VAPID PUBLIC KEY FROM SUPABASE
+const VAPID_PUBLIC_KEY = "PASTE_EXISTING_VAPID_PUBLIC_KEY_HERE";
 
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+}
+
+async function enablePushNotifications() {
+  const button = document.getElementById("enableNotificationsButton");
+  const status = document.getElementById("pushStatus");
+
+  button.disabled = true;
+  status.textContent = "Setting up notifications...";
+
+  try {
+    if (!("serviceWorker" in navigator) ||
+        !("PushManager" in window) ||
+        !("Notification" in window)) {
+      throw new Error("Push notifications are not supported by this browser.");
+    }
+
+    if (VAPID_PUBLIC_KEY === "187a3215fd455303f496b294f39189e6131409f764c0694e931e5c9d4a742e09") {
+      throw new Error("The VAPID public key has not been added yet.");
+    }
+
+    const { data: userData, error: userError } =
+      await supabaseClient.auth.getUser();
+
+    if (userError) throw userError;
+    if (!userData?.user) {
+      throw new Error("Please sign in first.");
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      throw new Error("Notification permission was not granted.");
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+
+    let subscription = await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+    }
+
+    const subscriptionJson = subscription.toJSON();
+
+    if (!subscriptionJson.endpoint ||
+        !subscriptionJson.keys?.p256dh ||
+        !subscriptionJson.keys?.auth) {
+      throw new Error("Incomplete push subscription. Please try again.");
+    }
+
+    const { data: existingRows, error: lookupError } =
+      await supabaseClient
+        .from("push_subscriptions")
+        .select("id, subscription")
+        .eq("user_id", userData.user.id);
+
+    if (lookupError) throw lookupError;
+
+    const existingRow = (existingRows || []).find(row =>
+      row.subscription?.endpoint === subscriptionJson.endpoint
+    );
+
+    let saveResult;
+
+    if (existingRow) {
+      saveResult = await supabaseClient
+        .from("push_subscriptions")
+        .update({ subscription: subscriptionJson })
+        .eq("id", existingRow.id)
+        .eq("user_id", userData.user.id);
+    } else {
+      saveResult = await supabaseClient
+        .from("push_subscriptions")
+        .insert({
+          user_id: userData.user.id,
+          subscription: subscriptionJson
+        });
+    }
+
+    if (saveResult.error) throw saveResult.error;
+
+    status.textContent = "Notifications are enabled on this device.";
+    button.textContent = "Notifications enabled";
+
+  } catch (error) {
+    console.error("Could not enable push notifications:", error);
+    status.textContent = error.message || "Could not enable notifications.";
+    button.disabled = false;
+  }
+}
 
     // --------------------------------------------------
     // SLIDESHOW CONTROL VISIBILITY
